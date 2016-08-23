@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Askey Computer Inc. PUMA無線路由初始設定</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="common/plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<!-- <link href="common/plugin/bootstrap/css/theme-blackRed.css" rel="stylesheet" media="screen"> -->
+		<!-- <link href="common/plugin/bootstrap/css/theme-blue.css" rel="stylesheet" media="screen"> -->
+		<link href="common/css/main1.0.1.css" rel="stylesheet" media="screen">
+		<link rel="stylesheet" type="text/css" media="screen" href="common/plugin/bootstrap-switch/bootstrap-switch.min.css" />
+		<link rel="stylesheet" href="common/plugin/jquery-ui/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="common/plugin/uploadfile/uploadfile.min.css" />
+		<link rel="stylesheet" href="common/plugin/font-awesome/css/font-awesome.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="common/plugin/datetimepicker/bootstrap-datetimepicker.min.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="common/plugin/shCircleLoader/jquery.shCircleLoader.css" />
+		<link href="css/main.css" rel="stylesheet" media="screen">
+		<link href="css/init.css" rel="stylesheet" media="screen">
+		<script type="text/javascript" src="common/plugin/jquery-1.11.1.min.js"></script>
+		<script src="common/plugin/bootstrap/js/bootstrap.min.js"></script>
+		<script src="common/plugin/jquery.confirm.min.js"></script>
+		<script src="common/plugin/jquery.cookie.js"></script>
+		<script src="common/plugin/moment.js"></script>
+		<script src="common/plugin/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+		<script src="common/plugin/shCircleLoader/jquery.shCircleLoader-min.js"></script>
+		<script src="common/plugin/jquery-ui/jquery-ui.js"></script>
+		<script src="common/plugin/jquery-md5.js"></script>
+		<script src="common/plugin/multiselect.min.js"></script>
+		<script src="common/plugin/jquery.input-ip-address-control.js"></script>
+		<script src="common/plugin/bootstrap-show-password.js"></script>
+		<script src="common/plugin/bootstrap-switch/bootstrap-switch.min.js"></script>
+		<script src="common/plugin/bootstrap-filestyle.min.js"></script>
+		<script src="common/js/func1.0.1.js"></script>
+		<script src="js/init.js"></script>
+		<script>
+			$(document).ready(function() {
+				$('.multipleselect').multiselect();
+				$('.ipinput').ipAddress();
+				$('.ipv6input').ipAddress({
+					v: 6
+				});
+				$('.ipv1input').ipAddress({
+					v: 1
+				});
+				$('#atfbar').slider({
+					range: "min",
+					animate: true,
+					value: 1,
+					min: 0,
+					max: 100,
+					step: 1,
+					slide: function(event, ui) {
+						$("#atfpercent").val(ui.value + '%');
+					},
+					change: function(event, ui) {
+						var percent = ui.value;
+					}
+				});
+				$("#atfpercent").val('0%');
+				$(".checkbox").bootstrapSwitch({
+					size: 'small',
+					toggleState: true,
+					onSwitchChange: function(e, s) {
+						if (s == true) {
+							$(this).attr('checked', 'checked');
+							$(this).val('0');;
+						} else {
+							$(this).removeAttr('checked');
+							$(this).val('1');
+						}
+						$(this).trigger('selectclick');
+					}
+				});
+			});
+		</script>
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+		<script src="js/html5shiv.js"></script>
+		<script src="js/respond.min.js"></script>
+		<script src="js/css3-mediaqueries.js"></script>
+		<script src="js/jquery.placeholder.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$('input, textarea').placeholder();
+			});
+		</script>
+		<![endif]-->
+		<!-- <link rel="stylesheet" type="text/css" media="screen" href="css/pie.css" /> -->
+	</head>
+	<body>
+		<!-- alert -->
+		<div class="modal fade popup" id="modal-messagebox" tabindex="-1" data-backdrop="static" data-keyboard="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title"><span class="glyphicon glyphicon-check"></span> Message Content</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-12">
+								<span class="messagetext"></span>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<div class="col-md-9">
+						</div>
+						<div class="col-md-3">
+							<a class="btn btn-default btn-lg" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> OK</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- alert -->
+		<div class="top-content">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 form-box">
+						<form role="form" action="" method="post" class="f1">
+							<div>
+								<h3>Initial your WIFI setting</h3>
+								<p>Step by step to set your WIFI device</p>
+							</div>
+							<div class="summary" style="display:none;">
+								<div class="row">
+									<div class="col-md-12 table-responsive triggerportlist">
+										<table class="table table-striped">
+											<caption>
+											<span><i class="fa fa-list-alt" aria-hidden="true"></i> Set up summary:</span>
+											</caption>
+											<thead>
+												<tr>
+													<th>Type</th>
+													<th>Information</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Coonect Type</td>
+													<td>DHCP</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="f1-buttons">
+											<button type="button" class="btn btn-default btn-previous">Back</button>
+											<button type="button" class="btn btn-default btn-submit">Apply</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="f1-steps">
+								<div class="f1-progress">
+									<div class="f1-progress-line" data-now-value="16.66" data-number-of-steps="3" style="width: 16.66%;"></div>
+								</div>
+								<div class="f1-step active">
+									<div class="f1-step-icon"><i class="fa fa-key"></i></div>
+									<p style="margin-left:-7px;">Password</p>
+								</div>
+								<div class="f1-step">
+									<div class="f1-step-icon"><i class="fa fa-globe"></i></div>
+									<p>WAN</p>
+								</div>
+								<div class="f1-step">
+									<div class="f1-step-icon"><i class="fa fa-wifi"></i></div>
+									<p style="margin-left:-5px;">Wireless</p>
+								</div>
+							</div>
+
+							<div class="config">
+								<fieldset style="display: block;" id="firststep">
+									<div class="col-md-12">
+										<h4>Set up Password for adminstration:</h4>
+									</div>
+									<div class="col-md-12">
+										<div class="formGroup">
+											<span class="label-title">Password*</span>
+											<input id="password" type="password" class="input-all" placeholder="Password" data-seepw="see password">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="formGroup">
+											<span class="label-title">Verify*</span>
+											<input type="password" class="input-all verify" placeholder="Password" data-seepw="see password">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="f1-buttons">
+											<button type="button" class="btn btn-default btn-block btn-next">Next</button>
+										</div>
+									</div>
+								</fieldset>
+								<fieldset id="secstep">
+									<div class="col-md-12">
+										<div class="formGroup select-icon">
+											<span class="label-title">Connection Type</span>
+											<select class="input-all" id="connectiontype">
+												<option value="0" selected>DHCP</option>
+												<option value="1">PPPoE</option>
+												<option value="2">Static</optoin>
+												<!-- <option value="3">PPTP</option> -->
+												<!-- <option value="4">L2TP</option> -->
+											</select>
+										</div>
+										<div class="col-md-12">
+											<label class="sr-only" for="f1-about-yourself">About yourself</label>
+											<p id="connectiontypedesc">
+											</p>
+										</div>
+										<div class="col-md-12 pppoeuse pptpuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">Username*</span>
+												<input id="vpnusername" type="text" class="input-all" placeholder="Username">
+											</div>
+										</div>
+										<div class="col-md-12 pppoeuse pptpuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">Password*</span>
+												<input id="vpnpassword" type="password" class="input-all" placeholder="Password" data-seepw="see password">
+											</div>
+										</div>
+										<div class="col-md-12 pptpuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">IP Auto assignment</span>
+												<div class="btn-group" data-toggle="buttons" id="selectpptpipstatic">
+													<label class="btn btn-checkbox" value="1">
+														<input type="radio">ON
+													</label>
+													<label class="btn btn-checkbox active" value="0">
+														<input type="radio">OFF
+													</label>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-12 staticipuse pptpstaticipuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">IP*</span>
+												<input id="ipaddress" type="text" class="input-all ipinput" placeholder="String">
+											</div>
+										</div>
+										<div class="col-md-12 staticipuse pptpstaticipuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">Netmask*</span>
+												<input id="netmask" type="text" class="input-all ipinput" placeholder="String">
+											</div>
+										</div>
+										<div class="col-md-12 staticipuse pptpstaticipuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">Gateway*</span>
+												<input id="gateway" type="text" class="input-all ipinput" placeholder="String">
+											</div>
+										</div>
+										<div class="col-md-12 dhcpuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">Host Name</span>
+												<input id="hostname" type="text" class="input-all" placeholder="Default">
+											</div>
+										</div>
+										<!-- <div class="col-md-12 dhcpuse staticipuse">
+											<div class="formGroup">
+												<span class="label-title">MAC</span>
+												<input id="macaddress" type="text" class="input-all ipv1input" placeholder="MAC" data-seepw="see password">
+											</div>
+										</div> -->
+										<div class="row">
+											<div class="col-md-12 dhcpuse pptpuse">
+												<div class="formGroup">
+													<span class="label-title">Manual DNS</span>
+													<div class="btn-group" data-toggle="buttons" id="selectwandns">
+														<label class="btn btn-checkbox" value="0">
+															<input type="radio">ON
+														</label>
+														<label class="btn btn-checkbox active" value="1">
+															<input type="radio">OFF
+														</label>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-12 dhcpwandnsuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">DNS 1*</span>
+												<input id="dns1" type="text" class="input-all ipinput" placeholder="String">
+											</div>
+										</div>
+										<div class="col-md-12 dhcpwandnsuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">DNS 2</span>
+												<input id="dns2" type="text" class="input-all ipinput" placeholder="String">
+											</div>
+										</div>
+										<div class="col-md-12 pptpuse" style="display:none;">
+											<div class="formGroup">
+												<span class="label-title">VPN Server</span>
+												<input id="vpnserver" type="text" class="input-all ipinput" placeholder="String">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="f1-buttons">
+													<button type="button" class="btn btn-default btn-previous">Previous</button>
+													<button type="button" class="btn btn-default btn-next">Next</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+								<fieldset id="thirdstep">
+									<div class="col-md-12">
+										<h4>Set up for Wireless and LAN IP:</h4>
+									</div>
+									<div class="col-md-12">
+										<div class="formGroup">
+											<span class="label-title">Admin Password as Key</span>
+											<div class="btn-group" data-toggle="buttons" id="useadminpassaskey">
+												<label class="btn btn-checkbox active" value="1">
+													<input type="radio">ON
+												</label>
+												<label class="btn btn-checkbox" value="0">
+													<input type="radio">OFF
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="formGroup">
+											<span class="label-title">2.4G SSID</span>
+											<input id="24gssid" type="text" class="input-all" placeholder="String" value="2.4G WIFI">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="formGroup">
+											<span class="label-title">2.4G Key</span>
+											<input id="24gkey" type="password" class="input-all" placeholder="String" data-seepw="see password">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="formGroup">
+											<span class="label-title">5G Share 2.4G SSID and Key</span>
+											<div class="btn-group" data-toggle="buttons" id="samessidandkey">
+												<label class="btn btn-checkbox active" value="0">
+													<input type="radio">ON
+												</label>
+												<label class="btn btn-checkbox" value="1">
+													<input type="radio">OFF
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12 24Gsame" style="display:none;">
+										<div class="formGroup">
+											<span class="label-title">5G SSID</span>
+											<input id="5gssid" type="text" class="input-all" placeholder="String" value="2.4G WIFI">
+										</div>
+									</div>
+									<div class="col-md-12 24Gsame" style="display:none;">
+										<div class="formGroup">
+											<span class="label-title">5G Key</span>
+											<input id="5gkey" type="password" class="input-all" placeholder="String" data-seepw="see password">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="formGroup">
+											<span class="label-title">LAN IP</span>
+											<input id="lanip" type="text" class="input-all ipinput" placeholder="String" value="192.168.1.1">
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="f1-buttons">
+											<button type="button" class="btn btn-default btn-previous">Previous</button>
+											<button type="button" class="btn btn-default btn-submit">Go</button>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</form>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- loading div -->
+		<div id="loadingdiv">
+			<div id="loading"></div>
+			<div class="countDown"></div>
+		</div>
+		<!-- admin -->
+	</body>
+</html>

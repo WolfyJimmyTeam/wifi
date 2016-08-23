@@ -1,0 +1,3470 @@
+WIFI embedded system management API 0.9
+
+URL /cgi-bin/index.cgi
+
+資料傳遞
+
+一般資料擷取API均以get取得,其餘API一律以post傳送,post的內容皆用body以json樣板傳送，除了Wizard與Login API沒有已sessionid傳遞，其餘皆須使用sessionid回傳的json樣板
+如果設定Post作動時需花費大量時間(超過3秒），建議可以先行回傳等候時間，再行作動。
+如果需要reload的page回傳reload yes否則不傳
+
+狀態
+success:傳入參數正確 error:傳入參數缺少或錯誤 [feed]:回傳內容 [e_code]:錯誤碼,stat為error時會出現
+
+// 傳入參數正確
+{
+"stat":"success", "feed":{
+{"msg":"Succuess", "data":{"xxxxx"}} }
+}
+
+// 傳入參數錯誤
+
+{
+"stat":"error", "feed":{
+{“e_code”:”xxx”,“msg”:”Error Message", "data":{"xxxxx"}} }
+}
+
+e_code - 錯誤碼
+1001:無此功能
+2000:sessionid驗證失敗
+2001:程式驗證失敗(Login only)
+2002:傳入參數缺少
+2003~程式錯誤回覆，錯誤內容
+
+
+/********************************************************/
+getwaittingtime
+
+method:post
+{
+string method
+}
+
+Result:
+object data
+{
+int init: 90,
+int firmwareupload: 360,
+int configupload: 190,
+int configrestore: 200,
+int connecttowireless: 20,
+int switchmoderoute:150,
+int switchmodeap:150,
+int switchmodebridge:150,
+int switchmodemedia:150,
+int reboottime: 120
+}
+
+
+/********************************************************/
+isinit  /* check the system was initialized
+
+method:post
+{
+string method
+}
+
+Result:
+
+
+/********************************************************/
+detechwan  /* detect if wan connected */
+
+method:post
+{
+string method
+}
+
+Result:  /* if dhcp was not detected return "" */
+data object
+{
+bool ifwanconnect
+string dhcpip
+string dhcpgatewawy
+string dhcpnetmask
+string dhcpdns1
+string dhcpdns2
+string 24gssid
+string 5gssid
+}
+
+
+/********************************************************/
+wizard (lan mask default is 255.255.255.0, lan dhcp start from .21~127) (Don't return any response when system reboot success)
+
+method:post
+{
+string method
+string password
+int type
+string hostname
+bool manualdns
+string dns1
+string dns2
+string vpnusername
+string vpnpassword
+string ip
+string netmask
+string gateway
+bool ipautoassign
+string vpnserver
+string 24gssid
+string 24gkey
+string 5gssid
+string 5gkey
+string lanip
+}
+
+Result:
+
+
+/********************************************************/
+login
+
+method:post
+{
+string method
+string username:(admin)
+string password /* md5 encrypt */
+}
+
+Result:
+object data
+{
+string sessionid:”xxxxxxxxx”
+}
+
+
+/********************************************************/
+logout
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result:
+
+
+/********************************************************/
+changepassword
+
+method:post
+{
+string method
+string sessionid
+string oldpass
+string newpass
+}
+
+Result:
+
+
+/********************************************************/
+reboot   (Don't return any response when system reboot success)
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result:
+
+
+/********************************************************/
+statistic
+
+method:post
+{
+string method
+string sessionid
+string type1:(cpu/lan/wan/wiress24g/wireless5g)
+string type2
+..
+..
+}
+
+Result:
+object data
+{
+int cpu: less than 100
+int lan: 1024 (bytes)
+….
+}
+
+
+/********************************************************/
+getlanguages
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result:
+object data
+{
+object langs
+[{
+string langid
+string langstr
+}]
+}
+
+
+/********************************************************/
+setlanguages
+
+method:post
+{
+string method
+string sessionid
+string langid
+}
+
+Result:
+
+
+/********************************************************/
+systeminfo
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result:
+object data
+{
+integer time: 7867612312
+string fever: “1.0.0 (2016-06-05 05:11 +0800)”
+string hwver::”V1.0REV1”
+integer uptime:776273
+string 24gssid:”wolfy-2g”
+string 24gkey:”1234”
+string authmethod:”WPA2 Personal
+string 5gssid:’wolfy-5g”
+string 5gkey:”1234”
+string mac:”00:xx:xx:xx…”
+string defaultmac:"xxxxx"  /* factory default mac */
+string serialno:”7a98s87sjhxxha…”
+}
+
+
+/********************************************************/
+eventmsg
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result:
+object data
+{
+object message [
+{
+string id
+string messagecontent
+bool isread /* yes/no */
+string time
+}
+]
+}
+
+
+/********************************************************/
+seteventread
+
+method:post
+{
+string method
+string sessionid
+string id
+}
+
+Result:
+
+
+/********************************************************/
+userstatic
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result:
+object data
+{
+	array userstatic[    /* maximum is 6 records */
+	{
+		string name: 'wolfy'
+		int wanusage: '1024' bytes
+	},
+	{
+		string name: 'wolfy1'
+		int wanusage: '2048' bytes
+	}
+	]
+}
+
+
+/********************************************************/
+wanstatus
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result:
+object data {
+string type: 'WAN13121'
+string wanip:”xxx.xxx…..”
+string wandns:”xxx.xxx.xxx”
+string gateway:”xxx.xxx.xxx”
+string wanupmax:”xxxMbps"
+string wandownmax:”xxxMbps"
+bool wanupordown
+string downreason
+}
+
+
+/********************************************************/
+wanspeedset
+
+method:post
+{
+string method
+string sessionid
+string maxdownload
+string maxupload
+}
+
+Result:
+object data {
+string wanip:”xxx.xxx…..”
+string wandns:”xxx.xxx.xxx”
+string gateway:”xxx.xxx.xxx”
+string wanupmax:”xxxmb"
+string wandownmax:”xxxmb"
+string wanupordown
+}
+
+/********************************************************/
+wanspeedtest
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result:
+object data {
+string maxdownload
+string maxupload
+}
+
+
+/********************************************************/
+wirelessstatus
+
+method:post
+{
+string method
+string sessionid
+string type   /* online/history/dhcp lease */
+}
+
+Result:
+object data
+{
+	array status
+	[
+		{
+			string device:”wolfy-air”
+			string time:”string”  /* online will display time, offline just give "offline" string */
+			string ip:”xxxx.xxx.xxx”
+			string mac:”xx:xx….”
+			string type:"2.4G/5G/LAN....."
+			bool wanaccess
+			bool storageaccess
+			obj bandwidthlimit /*kbps, unlimited if up and down is zero*/
+			{
+				int up
+				int down
+			}
+		}
+	]
+}
+
+
+/********************************************************/
+setclientaccess
+
+method:post
+{
+string method
+string sessionid
+string mac
+bool set
+}
+
+Result
+
+
+/********************************************************/
+setstorageaccess
+
+method:post
+{
+string method
+string sessionid
+string mac
+bool set
+}
+
+Result
+
+
+/********************************************************/
+setbandwidthlimit /*kbps, unlimited if up and down is zero*/
+
+method:post
+{
+string method
+string sessionid
+int upload
+int download
+}
+
+Result
+
+
+/********************************************************/
+getparentalcontrl
+
+method:post
+{
+string method
+string sessionid
+string mac
+}
+
+Result
+object data          /* null mean empty */
+{
+	object schedule
+	{
+		string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+	}
+}
+
+
+/********************************************************/
+setparentalcontrl
+
+method:post
+{
+string method
+string sessionid
+string mac
+object data
+{
+string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+}
+}
+
+Result
+
+
+/********************************************************/
+storageinfo
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+integer avail:1000000000000 /* bytes */
+integer pic:1000000000000 /* Picture */
+integer vid:1000000000000 /* Video */
+integer mus: 1000000000000 /* Music */
+integer doc: 1000000000000 /* Document */
+integer ipc: 1000000000000 /* IPCam */
+integer oth: 1000000000000 /* others */
+string: status
+string sleepmode /* unsupported/enable/disable */
+string sambastatus: /* unsupported/enable/disable */
+string sambaguest /* enable/disable */
+string ftpstatus: /* unsupported/enable/disable */
+string ftpguest /* enable/disable */
+string webdav: /* unsupported/enable/disable */
+string webdavguest /* enable/disable */
+string wanwebdav /* enable/disable */
+string nfsstatus: /* unsupported/enable/disable */
+string nfsguest /* enable/disable */
+string afpstatus: /* unsupported/enable/disable */
+string dlnastatus: /* unsupported/enable/disable */
+string smart: /*unsupported/supported*/
+string filesystemcheck: /*unsupported/supported*/
+string format: /*unsupported/supported*/
+string userauth: /*unsupported/supported*/
+string supportprinter: /*unsupported/supported*/
+}
+
+
+/********************************************************/
+serviceenable   /* support All service should be turn on default, we can consider to disable this functions */
+method:post
+{
+string method
+string sessionid
+string service /* samba/ftp/webdav/nfs/afp/dlna */
+string action /* enable/disable */
+}
+
+Result
+object data
+{
+}
+
+
+/********************************************************/
+guestenable
+method:post
+{
+string method
+string sessionid
+string service /* samba/ftp/webdav/nfs/afp */
+string action /* enable/disable */
+}
+
+Result
+
+
+/********************************************************/
+wanwebdav
+method:post
+{
+string method
+string sessionid
+string action /* enable/disable */
+}
+
+Result
+
+
+/********************************************************/
+smartstatus
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+}
+
+
+/********************************************************/
+filesystemcheck
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	bool needcheck
+}
+
+/********************************************************/
+getfilesystemcheckstatus
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{   /* null if no check perform */
+integer:percentage
+string filename
+}
+
+/********************************************************/
+format
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	bool needformat
+}
+
+/********************************************************/
+getformatstatus
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{   /* null if no check perform */
+integer:percentage
+}
+
+/********************************************************/
+usbsaferemove
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	bool needremove
+}
+
+/********************************************************/
+usbsaferemovecheck
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+
+
+/********************************************************/
+getavailableprinter
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{   /* null if no check perform */
+	array printers
+	[
+		{
+			string uname
+			string alias
+		}
+	]
+}
+
+
+/********************************************************/
+getprintermanufactory
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array printers
+	[
+		{
+			string uname
+			string alias
+		}
+	]
+}
+
+
+/********************************************************/
+getprintermodel
+
+method:post
+{
+string method
+string sessionid
+string uname
+}
+
+Result
+object data
+{
+	array printers
+	[
+		{
+			string uname
+			string alias
+		}
+	]
+}
+
+
+/********************************************************/
+addprinter
+
+method:post
+{
+string method
+string sessionid
+string uname
+string type /* if type auto, no any extra parameters if type is manual , use manufactory and model, if type is upload, file will upload with ajax*/
+string manufactory
+strint model
+}
+
+Result
+
+
+/********************************************************/
+getprinters
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array printers:
+	[
+		{
+			string uname
+			string alias
+			string description
+			string status
+		}
+	]
+}
+
+
+/********************************************************/
+updateprinter
+
+method:post
+{
+string method
+string sessionid
+string uname
+string type /* if type auto, no any extra parameters if type is manual , use manufactory and model, if type is upload, file will upload with ajax*/
+string manufactory
+strint model
+}
+
+Result
+
+
+/********************************************************/
+deleteprinter
+
+method:post
+{
+string method
+string sessionid
+string uname
+}
+
+Result
+
+
+/********************************************************/
+getprinterjobs
+
+method:post
+{
+string method
+string sessionid
+string jobstatus /*all | suspend*/
+}
+
+Result
+object data
+{
+	array printerjobs
+	[
+		{
+			string uname
+			string alias
+			string size
+			string filename
+			string status
+		}
+	]
+}
+
+
+/********************************************************/
+deleteprinterjobs
+
+method:post
+{
+string method
+string sessionid
+string uname
+}
+
+Result
+
+
+/********************************************************/
+getusers
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object users
+{ (array)
+[
+string username
+string nickname
+string desc
+]
+}
+
+
+
+/********************************************************/
+adduser
+
+method:post
+{
+string method
+string sessionid
+string username
+string nickname
+string desc
+}
+
+Result
+
+
+/********************************************************/
+updateuser
+
+method:post
+{
+string method
+string sessionid
+string nickname
+string desc
+}
+
+Result
+
+
+/********************************************************/
+deleteuser
+
+method:post
+{
+string method
+string sessionid
+string username
+}
+
+Result
+
+
+/********************************************************/
+getdirectory
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+array folders
+	[
+		string directory
+	]
+}
+
+
+
+/********************************************************/
+makedirectory
+
+method:post
+{
+string method
+string sessionid
+string directory
+}
+
+Result
+
+
+/********************************************************/
+removedirectory
+
+method:post
+{
+string method
+string sessionid
+string directory
+}
+
+Result
+object data {
+bool shared
+}
+
+
+/********************************************************/
+forceremovedirectory
+/*if directory share use it to delete force, and backend need to remove all share of this directory*/
+
+method:post
+{
+string method
+string sessionid
+string directory
+}
+
+Result
+
+
+/********************************************************/
+getshares
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array shares
+	[
+		{
+			string directory
+			string sharename
+			string type
+			string desc
+			array users
+			[
+				{
+					string username
+					string nickname
+					string desc
+					string permission (RW/R)
+				}
+			]
+		}
+	]
+}
+
+
+/********************************************************/
+addshare
+
+method:post
+{
+	string method
+	string sessionid
+	object data
+	{
+	array shares
+		[
+			{
+				string directory
+				string sharename
+				string type
+				string desc
+				array users
+				[
+					string username
+					string permission ("RW","R")
+				]
+			}
+		]
+	}
+}
+
+Result
+
+
+/********************************************************/
+updateshare
+
+method:post
+{
+	string method
+	string sessionid
+	object data
+	{
+	array shares
+		[
+			{
+				string directory
+				string sharename
+				string type
+				string desc
+				array users
+				[
+					string username
+					string permission ("RW","R")
+				]
+			}
+		]
+	}
+}
+
+Result
+
+
+/********************************************************/
+removeshare
+
+method:post
+{
+string method
+string sessionid
+string sharename
+string type
+}
+
+Result
+
+
+/********************************************************/
+getselectlist
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array alllist [
+		{
+			string name /*(authmoth/24Gwirelessmode/5Gwirelessmode/24Gchannelbandwidth/5Gchannelbandwidth/24Gcontrolchannel/5Gcontrolchannel/wpaencrypt/protectedmanagementframes/24Gtxpoweradj/5Gtxpoweradj/24Gmulticastrate/5Gmulticastrate/24Gmeshchannel/5Gmeshchannel/wantype/dhcpupdatefreq/porttriggerprotocol/portforwardprotocol/timezone/logstatuspagestatustype/pptpvpnserverauth/openvpnserverfirewall/openvpnserverauthmode/openvpnserverextrahmacauth/openvpnserverencryptioncipher/vpnclienttype/vpnclientpptpencryption/netservicefilterprotocol/ipv6filterprotocol/ipv6configtype/multicastipv4multicastroute/multicastipv6multicastroute/tospagessid/80211tospageremarkdesc/iptvpageremarkdesc/remarkingwmmlist/prioritizationapptype)*/
+			array selectlist
+			[
+				{
+					string value
+					string text
+					bool default /* 1 is default, 0 is not*/
+				}
+			]
+		}
+	]
+}
+
+
+/********************************************************/
+getwirelessset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array set
+	[
+		{
+			int type (2.4G/5G)
+			string ssid
+			bool ssidonoff
+			int channel
+			bool ssidhide
+			int authmode
+			string wpa-pskkey
+			int wpe-encrypt
+			int wpe-keyindex
+			string wpe-key1
+			string wpe-key2
+			string wpe-key3
+			string wpe-key4
+			bool bgprotect (2.4G only)
+			int mode
+			int bandwidth
+			string extendchannel
+			int wpaencrypt
+			int protectedmanageframe
+			int maxconnect
+			int keyturninterval
+		}
+	]
+}
+
+
+/********************************************************/
+wirelessset
+
+method:post
+{
+string method
+string sessionid
+int type (2.4G/5G)
+string ssid
+bool ssidonoff
+int channel
+bool ssidhide
+int authmode
+string wpa-pskkey
+int wpe-encrypt
+int wpe-keyindex
+string wpe-key1
+string wpe-key2
+string wpe-key3
+string wpe-key4
+bool bgprotect (2.4G only)
+int mode
+int bandwidth
+string extendchannel
+int wpaencrypt
+int protectedmanageframe
+int maxconnect
+int keyturninterval
+}
+
+Result
+
+
+/********************************************************/
+getwirelessguestset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array set
+	[
+		{
+			string type (2.4G/5G)
+			bool guestenable
+			string guestssid
+			string networkkey
+		}
+	]
+}
+
+
+/********************************************************/
+wirelessguestset
+
+method:post
+{
+string method
+string sessionid
+string type (2.4G/5G)
+bool guestenable
+string guestssid
+string networkkey
+}
+
+Result
+
+
+/********************************************************/
+getwirelesswpsset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array set
+	[
+		{
+			int type (2.4G/5G)
+			bool wpsenable
+			string connectionstatus
+			string configured
+			int wpsmethod
+			string pincode
+			string clientpincode
+		}
+	]
+}
+
+
+/********************************************************/
+wirelesswpsset
+
+method:post
+{
+string method
+string sessionid
+int type (2.4G/5G)
+bool wpsenable
+string connectionstatus
+string configured
+int wpsmethod
+string pincode
+string clientpincode
+}
+
+Result
+
+
+/********************************************************/
+getwirelessaclset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array set
+	[
+		{
+			string type (2.4G/5G)
+			string macfilterenable
+			string mode
+			array acls
+			[
+				string
+			]
+		}
+	]
+}
+
+
+/********************************************************/
+wirelessaclset
+
+method:post
+{
+	string method
+	string sessionid
+	string type (2.4G/5G)
+	string macfilterenable
+	string mode
+	array acls
+	[
+		string
+	]
+}
+
+Result
+
+
+/********************************************************/
+getwirelessscheduleset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array set
+	[
+		{
+			int type (2.4G/5G)
+			bool scheduleenable
+			object schedule
+			{
+				string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+				string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+				string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+				string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+				string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+				string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+				string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+			}
+		}
+	]
+}
+
+
+/********************************************************/
+wirelessscheduleset
+
+method:post
+{
+	string method
+	string sessionid
+	int type (2.4G/5G)
+	bool scheduleenable
+	object schedule
+	{
+		string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+		string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+	}
+}
+
+Result
+
+
+/********************************************************/
+getwirelessradiusset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array set
+	[
+		{
+			int type (2.4G/5G)
+			bool radiusenable
+			string server
+			string port
+			string secret
+		}
+	]
+}
+
+
+/********************************************************/
+wirelessradiusset
+
+method:post
+{
+	string method
+	string sessionid
+	array set
+	[
+		{
+			int type (2.4G/5G)
+			bool radiusenable
+			string server
+			string port
+			string secret
+		}
+	]
+}
+
+Result
+
+
+/********************************************************/
+getwirelessprofessionset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array set
+	[
+		{
+			int type (2.4G/5G)
+			bool radioenable
+			bool txbursting
+			int txpower
+			int obssrssi
+			int rtslimit
+			int fragmentation
+			int signalinterval
+			int ampdu
+			bool dcsenable
+			bool enabletxstbc
+			bool enablerxstbc
+			bool apisolated
+			int multicastrate
+			bool shortguardinterval
+			int dtiminterval
+			bool enablewwm
+			bool enablewwmapsd
+			bool turboqam
+			bool universalbeamforming
+			bool radioresourcemanagment
+			bool wmmadmissioncontrol
+			bool spectralanalysisenable
+		}
+	]
+}
+
+
+/********************************************************/
+wirelessprofessionset
+
+method:post
+{
+string method
+string sessionid
+int type (2.4G/5G)
+bool radioenable
+bool txbursting
+int txpower
+int obssrssi
+int rtslimit
+int fragmentation
+int signalinterval
+int ampdu
+bool dcsenable
+bool enabletxstbc
+bool enablerxstbc
+bool apisolated
+int multicastrate
+bool shortguardinterval
+int dtiminterval
+bool enablewwm
+bool enablewwmapsd
+bool turboqam
+bool universalbeamforming
+bool radioresourcemanagment
+bool wmmadmissioncontrol
+bool spectralanalysisenable
+}
+
+Result
+
+
+/********************************************************/
+getwirelessatfset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array set
+	{
+		[
+			int type (2.4G/5G)
+			bool atfenable
+			string ssid
+			int percentage
+			array atfs
+			[
+				string mac;
+			]
+		]
+	}
+}
+
+
+/********************************************************/
+wirelessatfset
+
+method:post
+{
+	string method
+	string sessionid
+	int type (2.4G/5G)
+	bool atfenable
+	string ssid
+	int percentage
+	array atfs
+	[
+		string mac;
+	]
+}
+
+Result
+
+
+/********************************************************/
+getwirelessmeshset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array set
+	[
+		{
+			int type (2.4G/5G)
+			bool meshenable
+			string ssid
+			int channel
+			string key
+		}
+	]
+}
+
+
+/********************************************************/
+wirelessmeshset
+
+method:post
+{
+string method
+string sessionid
+int type (2.4G/5G)
+bool meshenable
+string ssid
+int channel
+string key
+}
+
+Result
+
+
+/********************************************************/
+getwandefault
+
+method:post
+{
+string method
+string sessionid
+int wantype
+}
+
+Result
+object data
+{
+int wantype
+int mtu
+string ip
+string netmask
+string gateway
+bool enabledns
+string dns1
+string dns2
+bool enable8021xmd5
+string username
+string password
+int encryption
+bool defaultroute
+string vpnserver
+string hostname
+string servicename
+string concentratorname
+string mac
+int dhcpupdatefreq
+}
+
+
+/********************************************************/
+getwanset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+int wantype
+int mtu
+string ip
+string netmask
+string gateway
+bool enabledns
+string dns1
+string dns2
+bool enable8021xmd5
+string username
+string password
+int encryption
+bool defaultroute
+string vpnserver
+string hostname
+string servicename
+string concentratorname
+string mac
+string defaultmac /* system default mac */
+int dhcpupdatefreq
+}
+
+
+/********************************************************/
+wanset
+
+method:post
+{
+string method
+string sessionid
+int wantype
+int mtu
+string ip
+string netmask
+string gateway
+bool enabledns
+string dns1
+string dns2
+bool enable8021xmd5
+string username
+string password
+int encryption
+bool defaultroute
+string vpnserver
+string hostname
+string servicename
+string concentratorname
+string mac
+int dhcpupdatefreq
+}
+
+Result
+
+
+/********************************************************/
+getddnssupport
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+array[
+string server
+]
+}
+
+
+/********************************************************/
+getddnsset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enableddns
+string server
+string hostname
+string accountemail
+string passwordkey
+bool wildcard
+bool iphostnameverification
+}
+
+
+/********************************************************/
+ddnsset
+
+method:post
+{
+bool enableddns
+string server
+string hostname
+string accountemail
+string passwordkey
+bool wildcard
+bool iphostnameverification
+}
+
+Result
+
+
+/********************************************************/
+getupnpsset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enablepnp
+int period
+int timetolive
+}
+
+
+/********************************************************/
+upnpsset
+
+method:post
+{
+bool enablepnp
+int period
+int timetolive
+}
+
+Result
+
+
+/********************************************************/
+getporttriggerset_applist
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{array applist[
+string desc
+int triggerpot
+int triggerprotocol
+string incomingport
+int incomingprotocol
+]
+}
+
+
+/********************************************************/
+getporttrigerset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enableporttriger
+object triggerportlist [
+string desc
+int triggerpot
+int triggerprotocol
+string incomingport
+int incomingprotocol
+]
+}
+
+
+/********************************************************/
+porttrigerset
+
+method:post
+{
+bool enableporttriger
+object triggerportlist [
+string desc
+int triggerpot
+int triggerprotocol
+string incomingport
+int incomingprotocol
+]}
+
+Result
+
+
+/********************************************************/
+getportforwardset_wellknowlist
+
+method:post
+{
+string method
+string sessionid
+string type (server/game)
+}
+
+Result
+object data
+{array wellknowlist [
+string name
+string portrange
+int localport
+int protocol
+]
+}
+
+
+/********************************************************/
+getportforwardset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enableportforward
+object portforwardlist [
+string name
+string portrange
+string localip
+int localport
+int protocol
+]
+}
+
+
+/********************************************************/
+portforwardset
+
+method:post
+{
+bool enableportforward
+object portforwardlist [
+string name
+string portrange
+string localip
+int localport
+int protocol
+]
+}
+
+
+Result
+
+
+/********************************************************/
+getdmzset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enabledmz
+string exposedip
+}
+
+
+/********************************************************/
+dmzset
+
+method:post
+{
+bool enabledmz
+string exposedip
+}
+
+Result
+
+
+/********************************************************/
+getnatpassthruset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool pptp
+bool l2tp
+bool ipsec
+bool ssl
+bool rtsp
+bool h323
+bool sip
+bool pppoerelay
+}
+
+
+/********************************************************/
+natpassthruset
+
+method:post
+{
+bool pptp
+bool l2tp
+bool ipsec
+bool ssl
+bool rtsp
+bool h323
+bool sip
+bool pppoerelay
+}
+
+Result
+
+
+/********************************************************/
+getlanipset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+string ip
+string netmask
+}
+
+
+/********************************************************/
+lanipset
+
+method:post
+{
+string ip
+string netmask
+bool force  /* force true is change dhcp ip range and gateway ip too. */
+}
+
+Result
+object data
+{
+	bool conflictdhcp
+}
+
+
+/********************************************************/
+getdhcpserverset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enable
+string addressfrom
+string addressto
+string gatewayip
+string dnsserver
+string winsserver
+string domainname
+object staticiplist [
+string mac
+string ip
+]
+}
+
+
+/********************************************************/
+dhcpserverset
+
+method:post
+{
+bool enable
+string addressfrom
+string addressto
+string gatewayip
+string dnsserver
+string winsserver
+string domainname
+object staticiplist [
+string mac
+string ip
+]
+}
+
+Result
+
+
+/********************************************************/
+getfirmwareset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+string productid
+string hardwarever
+string firmwarever
+}
+
+
+/********************************************************/
+firmwareset (Don't return any response when system reboot success)
+
+method:post (multiple part mime format upload)  use form key=value { file=<filename> }
+{
+string method
+string sessionid
+string filename
+}
+
+Result
+
+
+/********************************************************/
+downloadconfig
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+
+
+/********************************************************/
+restoredefault (Don't return any response when system reboot success)
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+
+
+/********************************************************/
+uploadconfig (Don't return any response when system reboot success)
+
+method:post (multiple part mime format upload), use form key=value { file=<filename> }
+{
+string method
+string sessionid
+}
+
+Result
+
+
+/********************************************************/
+getwirelesslist
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+	array wirelesslist
+	[
+		{
+			string name
+			string mac
+			string security
+			string bandwidth
+			int radiopercent /* 1-100 */
+		}
+	]
+}
+
+
+/********************************************************/
+connecttowireless
+
+method:post
+{
+string method
+string sessionid
+string name /*ssid*/
+string securitymode
+string security /*WEP Encryption*/
+string keyindex
+string key1
+string key2
+string key3
+string key4
+}
+
+Result
+
+
+/********************************************************/
+switchmoderouteset (Don't return any response when system reboot success)
+
+method:post
+{
+string method
+string sessionid
+string ssid
+string type
+string hostname
+string mac
+bool manualdns
+string dns1
+string dns2
+string vpnusername
+string vpnpassword
+string ip
+string netmask
+string gateway
+bool ipautoassign
+string vpnserver
+string 24gssid
+string 24gkey
+string 5gssid
+string 5gkey
+string lanip
+}
+
+Result:
+
+
+/********************************************************/
+switchmodeset (Don't return any response when system reboot success)
+
+method:post
+{
+string method
+string sessionid
+string mode /*wirelessbridge accessspoint mediabridge*/
+string ip
+string netmask
+string gateway
+bool autodns
+string dns1
+string dns2
+}
+
+Result
+
+
+/********************************************************/
+gettimeset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool auto
+string time
+string timezone
+object timeservers [
+string server
+]
+}
+
+
+/********************************************************/
+timeset
+
+method:post
+{
+string method
+string sessionid
+bool auto
+string time
+string timezone
+object timeservers [
+string server
+]
+}
+
+Result
+
+
+/********************************************************/
+getserviceset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool ssh
+bool https
+string httpport
+string httpsport
+bool webaccessfromwan
+}
+
+
+/********************************************************/
+serviceset
+
+method:post
+{
+string method
+string sessionid
+bool ssh
+bool https
+string httpport
+string httpsport
+bool webaccessfromwan
+}
+
+Result
+
+
+/********************************************************/
+getnotificationset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+string enable
+string smtpserver
+string sender
+string username
+string password
+object notifytype [{
+string type
+bool onoff
+}]
+string subject
+object emails [
+string recv
+]
+}
+
+
+/********************************************************/
+notificationset
+
+method:post
+{
+string method
+string sessionid
+string enable
+string smtpserver
+string sender
+string username
+string password
+object notifytype [{
+string type
+bool onoff
+}]
+string subject
+object emails [
+string recv
+]
+}
+
+Result
+
+
+/********************************************************/
+getlogset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+string logserver
+}
+
+
+/********************************************************/
+logset
+
+method:post
+{
+string method
+string sessionid
+string logserver
+}
+
+Result
+
+
+/********************************************************/
+getstatusset
+
+method:post
+{
+string method
+string sessionid
+string type /* systemlog/2.4G wireless client log/5G wireless client log/2.4G Spectral Analysis/5G Spectral Analysis/Routing Table/Port forwarding/Active connections/IPv6 network information/Snooping table */
+}
+
+Result
+object data
+{
+string statustext
+}
+
+
+/********************************************************/
+getmiscset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool autologout
+int timeout
+bool rebootschedule
+arr rebootscheduleweek /*1~7 ex. [1,3,5]*/
+string rebootscheduletime /*HH:MM:SS*/
+}
+
+
+/********************************************************/
+miscset
+
+method:post
+{
+string method
+string sessionid
+string autologout
+int timeout
+}
+
+Result
+
+
+/********************************************************/
+getpptpserverset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool pptpserverenable
+bool config /* basic/advanced */
+bool broadcast
+int authmode /* Auto/MS-CHAPv1/MS-CHAPv2 */
+bool mppe128encrypt
+bool mppe40encrypt
+bool noencrypt
+bool autoconnectdns
+string dns1
+string dns2
+bool autoconnectwins
+string wins1
+string wins2
+int mru
+int mtu
+string clientipstart
+string clientipend
+object users {
+[
+string currentstatus
+string username
+string password
+]
+}
+}
+
+
+/********************************************************/
+pptpserverset
+
+method:post
+{
+string method
+string sessionid
+bool pptpserverenable
+bool config /* basic/advanced */
+bool broadcast
+int authmode /* Auto/MS-CHAPv1/MS-CHAPv2 */
+bool mppe128encrypt
+bool mppe40encrypt
+bool noencrypt
+bool autoconnectdns
+string dns1
+string dns2
+bool autoconnectwins
+string wins1
+string wins2
+int mru
+int mtu
+string clientipstart
+string clientipend
+object users {
+[
+string currentstatus
+string username
+string password
+]
+}
+}
+
+Result
+
+
+/********************************************************/
+getopenvpnserverset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool openvpnserverenable
+bool config /* basic/advanced */
+bool interface
+bool protocol
+int port
+int firewall
+int authmode
+bool userpassauthonly
+int extrahmacauth
+bool allocatefromdhcp
+string ipstart
+string ipend
+string localendip
+string remoteendip
+string subnet
+string netmask
+int pollinterval
+bool pushlantoclient
+bool alltrafficthroughvpn
+bool responsetodns
+int encryptioncipher
+bool compress
+int tlsrenegotiationtime
+bool manageclientspecficoptions
+string statickey
+string certificateauth
+string servercertificate
+string serverkey
+string diffiehellman
+string revocationlist
+object users {
+[
+string currentstatus
+string username
+string password
+]
+}
+}
+
+
+/********************************************************/
+openvpnserverset
+
+method:post
+{
+string method
+string sessionid
+bool openvpnserverenable
+bool config /* basic/advanced */
+bool interface
+bool protocol
+int port
+int firewall
+int authmode
+bool userpassauthonly
+int extrahmacauth
+bool allocatefromdhcp
+string ipstart
+string ipend
+string localendip
+string remoteendip
+string subnet
+string netmask
+int pollinterval
+bool pushlantoclient
+bool alltrafficthroughvpn
+bool responsetodns
+int encryptioncipher
+bool compress
+int tlsrenegotiationtime
+bool manageclientspecficoptions
+string statickey
+string certificateauth
+string servercertificate
+string serverkey
+string diffiehellman
+string revocationlist
+object users {
+[
+string currentstatus
+string username
+string password
+]
+}
+}
+
+Result
+
+
+/********************************************************/
+getvpnclientset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+object clients {
+[
+string currentstatus  /* Connected/DisConnected/Retrying/.....*/
+string desc
+int type
+string vpnserver
+bool defaultroute
+string username
+string password
+int pptpencrypt
+bool requestca
+string certificate
+string clientcertificate
+string clientkey
+string statickey
+]
+}
+}
+
+
+/********************************************************/
+vpnclientadd
+
+method:post (multiple part mime format upload)  use form key=value { file=<filename> }
+{
+string method
+string sessionid
+string desc
+int type
+string vpnserver
+bool defaultroute
+string username
+string password
+int pptpencrypt
+string importovpn
+bool requestca
+string importca
+string certificate
+string clientcertificate
+string clientkey
+string statickey
+}
+
+Result
+
+
+/********************************************************/
+vpnclientupdate
+
+method:post (multiple part mime format upload)  use form key=value { file=<filename> }
+{
+string method
+string sessionid
+string desc
+int type
+string oldvpnserver
+string vpnserver
+bool defaultroute
+string oldusername
+string username
+string password
+int pptpencrypt
+string importovpn
+bool requestca
+string importca
+string certificate
+string clientcertificate
+string clientkey
+string statickey
+}
+
+Result
+
+
+/********************************************************/
+vpnclientdelete
+
+method:post
+{
+string method
+string sessionid
+int type
+string vpnserver
+string username
+}
+
+Result
+
+
+/********************************************************/
+vpnclientconnect
+
+method:post
+{
+string method
+string sessionid
+int type
+string vpnserver
+string username
+}
+
+Result
+
+
+/********************************************************/
+vpnclientdisconnect
+
+method:post
+{
+string method
+string sessionid
+int type
+string vpnserver
+string username
+}
+
+Result
+
+
+/********************************************************/
+getfirewallcommonset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enable
+bool dosprotection
+bool denypingtowan
+bool igmpmld
+}
+
+
+/********************************************************/
+firewallcommonset
+
+method:post
+{
+string method
+string sessionid
+bool enable
+bool dosprotection
+bool denypingtowan
+bool igmpmld
+}
+
+Result
+
+
+/********************************************************/
+getfirewallurlset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enable
+object urls {
+[
+string url
+]
+}
+object schedule
+{
+string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+}
+}
+
+
+/********************************************************/
+firewallurlset
+
+method:post
+{
+string method
+string sessionid
+bool enable
+object urls {
+[
+string url
+]
+}
+object schedule
+{
+string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+}
+}
+
+Result
+
+
+/********************************************************/
+getfirewallkeywordset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enable
+object keywords {
+[
+string keyword
+]
+}
+object schedule
+{
+string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+}
+}
+
+
+/********************************************************/
+firewallkeywordset
+
+method:post
+{
+string method
+string sessionid
+bool enable
+object keywords {
+[
+string keyword
+]
+}
+object schedule
+{
+string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+}
+}
+
+Result
+
+
+/********************************************************/
+getfirewallnetservicewellknownservice
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+object services {
+[
+string servicename
+string portrange
+int protocol
+]
+}
+}
+
+
+/********************************************************/
+getfirewallnetserviceset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enable
+bool blakcorwhite
+object rules {
+[
+string srcip
+string srcportrange
+string destip
+string destportrange
+int protocol
+]
+}
+object schedule
+{
+string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+}
+}
+
+
+/********************************************************/
+firewallnetserviceset
+
+method:post
+{
+string method
+string sessionid
+bool enable
+bool blakcorwhite
+object rules {
+[
+string srcip
+string srcportrange
+string destip
+string destportrange
+int protocol
+]
+}
+object schedule
+{
+string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+}
+}
+
+Result
+
+
+/********************************************************/
+getfirewallipv6wellknownservice
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+object services {
+[
+string servicename
+string servicealias
+string portrange
+string protocol
+]
+}
+}
+
+
+/********************************************************/
+getfirewallipv6filterset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+bool enable
+object rules {
+[
+string servername
+string remoteipcidr
+string localip
+string portrange
+string protocol
+]
+}
+object schedule
+{
+string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+}
+}
+
+
+/********************************************************/
+firewallipv6filterset
+
+method:post
+{
+string method
+string sessionid
+bool enable
+object rules {
+[
+string servername
+string remoteipcidr
+string localip
+string portrange
+string protocol
+]
+}
+object schedule
+{
+string sun:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string mon:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string tus:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string wen:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string thr:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string fri:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+string sat:”0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0”    /* 0 is disable 1 is enable*/
+}
+}
+
+Result
+
+/********************************************************/
+getipv6default
+
+method:post
+{
+string method
+string sessionid
+int type /* Native/Tunnel 6to4/Tunnel 6in4/Tunnel 6rd/Static IPv6 */
+}
+
+Result
+object data
+{
+int type  /* Native/Tunnel 6to4/Tunnel 6in4/Tunnel 6rd/Static IPv6 */
+bool dhcppd
+bool dhcpoption
+string wanaddress
+int wanprefixlength
+string ipv4anycastrelay
+string serveripv4address
+bool routeradvertisement
+string clientipv6address
+string wangateway
+string ipv4borderrouter
+int ipv4routermasklength
+int tunnelmtu
+int tunnelttl
+int wanmtu
+bool simultaneous
+int simulatneoustype
+string lanaddress
+int lanprefixlength
+string lanprefix
+int lanmtu
+string dhcppoolfrom
+string dhcppoolto
+int pdvalidlifetime
+int pdpreferredlifetime
+bool autodns
+string dns1
+string dns2
+string dns3
+}
+
+
+/********************************************************/
+getipv6set
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+int type  /* Disable/Native/Tunnel 6to4/Tunnel 6in4/Tunnel 6rd/Static IPv6 */
+bool dhcppd
+bool dhcpoption
+string wanaddress
+int wanprefixlength
+string ipv4anycastrelay
+string serveripv4address
+bool routeradvertisement
+string clientipv6address
+string wangateway
+string ipv4borderrouter
+int ipv4routermasklength
+int tunnelmtu
+int tunnelttl
+int wanmtu
+bool simultaneous
+int simulatneoustype
+string lanaddress
+int lanprefixlength
+string lanprefix
+int lanmtu
+string dhcppoolfrom
+string dhcppoolto
+int pdvalidlifetime
+int pdpreferredlifetime
+bool autodns
+string dns1
+string dns2
+string dns3
+}
+
+
+/********************************************************/
+ipv6set
+
+method:post
+{
+int type  /* Disable/Native/Tunnel 6to4/Tunnel 6in4/Tunnel 6rd/Static IPv6 */
+bool dhcppd
+bool dhcpoption
+string wanaddress
+int wanprefixlength
+string ipv4anycastrelay
+string serveripv4address
+bool routeradvertisement
+string clientipv6address
+string wangateway
+string ipv4borderrouter
+int ipv4routermasklength
+int tunnelmtu
+int tunnelttl
+int wanmtu
+bool simultaneous
+int simulatneoustype
+string lanaddress
+int lanprefixlength
+string lanprefix
+int lanmtu
+string dhcppoolfrom
+string dhcppoolto
+int pdvalidlifetime
+int pdpreferredlifetime
+bool autodns
+string dns1
+string dns2
+string dns3
+}
+
+Result
+
+
+/********************************************************/
+getmulticastset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+string ipv4multicastroute
+string ipv6multicastroute
+string igmpmldsnooping
+string mldfastleave
+}
+
+
+/********************************************************/
+multicastset
+
+method:post
+{
+string method
+string sessionid
+string method
+string sessionid
+string ipv4multicastroute
+string ipv6multicastroute
+string igmpmldsnooping
+string mldfastleave
+}
+
+Result
+
+
+/********************************************************/
+get80211tosset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+object lists
+[
+{
+string ssid
+string remarkdesc
+}
+]
+}
+
+
+/********************************************************/
+80211tosset
+
+method:post
+{
+string method
+string sessionid
+object lists
+[
+{
+string ssid
+string remarkdesc
+}
+]
+}
+
+Result
+
+
+/********************************************************/
+getiptvset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+object lists
+[
+{
+string sourceiptv
+string remarkdesc
+}
+]
+}
+
+
+/********************************************************/
+iptvset
+
+method:post
+{
+string method
+string sessionid
+object lists
+[
+{
+string sourceiptv
+string remarkdesc
+}
+]
+}
+
+Result
+
+
+/********************************************************/
+getremarkwwmset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+object lists
+[
+{
+string ssid;
+string remarkwwm
+}
+]
+}
+
+
+/********************************************************/
+remarkwwmset
+
+method:post
+{
+string method
+string sessionid
+object lists
+[
+{
+string ssid;
+string remarkwwm
+}
+]
+}
+
+Result
+
+
+/********************************************************/
+getprioritizationset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+object lists
+[
+{
+int type /* Device/Application */
+string target
+int mark
+}
+]
+}
+
+
+/********************************************************/
+prioritizationset
+
+method:post
+{
+string method
+string sessionid
+object lists
+[
+{
+int type /* Device/Application */
+string target
+int mark
+}
+]
+}
+
+Result
+
+
+/********************************************************/
+getwakeonlanset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+object lists
+[
+{
+string devicename
+string mac
+}
+]
+}
+
+
+/********************************************************/
+wakeonlanset
+
+method:post
+{
+string method
+string sessionid
+object lists
+[
+{
+string devicename
+string mac
+}
+]
+}
+
+Result
+
+
+/********************************************************/
+wakeonlannow
+
+method:post
+{
+string method
+string sessionid
+string mac
+}
+
+Result
+
+
+/********************************************************/
+getmaclists /* get all macs include online/offline */
+
+method:post
+{
+string method
+string sessionid
+object macs
+[
+{
+string mac
+}
+]
+}
+
+Result
