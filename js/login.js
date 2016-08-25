@@ -35,7 +35,9 @@ function login() {
 			$("section#admin, #help-btn").show();
 			$('[href="#wifirouterpage"]').trigger('click');
 			defaultTrigger();
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 			if ($.cookie('isFirstUser')==undefined) {
 				$.cookie('isFirstUser', true,{path: '/'});
 				$('#help-btn').addClass('welcomeTip').trigger('click');

@@ -646,7 +646,7 @@ function statistic(type) {
 }
 function getRandomDatacpu() {
 	var container = $('#cpuload');
-	var maximum = container.outerWidth() / 2 || 300;
+	var maximum = container.outerWidth() / 4 || 300;
 
 	if (randomdatacpu.length) {
 		randomdatacpu = randomdatacpu.slice(1);
@@ -670,26 +670,35 @@ function getRandomDatacpu() {
 
 function getRandomDatabandwidth() {
 	var container = $('#nettraffic');
-	var maximum = container.outerWidth() / 2 || 300;
+	var ret = [];
+	var maximum = container.outerWidth() / 4 || 300;
+	if(randomdatabandwidth[0]==null) {
+		randomdatabandwidth[0] = [];
+	}
+	if(randomdatabandwidth[1]==null) {
+		randomdatabandwidth[1] = [];
+	}
+	for(var j = 0; j < 2; j++ ) {
+		if (randomdatabandwidth[j].length) {
+			randomdatabandwidth[j] = randomdatabandwidth[j].slice(1);
+		}
 
-	if (randomdatabandwidth.length) {
-		randomdatabandwidth = randomdatabandwidth.slice(1);
+		while (randomdatabandwidth[j].length < maximum) {
+			var previous = randomdatabandwidth[j].length ? randomdatabandwidth[j][randomdatabandwidth[j].length - 1] : 50;
+			var y = previous + Math.random() * 1000000 - 500000;
+			randomdatabandwidth[j].push(y < 0 ? 0 : y > 100000000 ? 100000000 : y);
+		}
+
+		// zip the generated y values with the x values
+
+		var res = [];
+		for (var i = 0; i < randomdatabandwidth[j].length; ++i) {
+			res.push([i, randomdatabandwidth[j][i]])
+		}
+		ret.push(res);
 	}
 
-	while (randomdatabandwidth.length < maximum) {
-		var previous = randomdatabandwidth.length ? randomdatabandwidth[randomdatabandwidth.length - 1] : 50;
-		var y = previous + Math.random() * 1000000 - 500000;
-		randomdatabandwidth.push(y < 0 ? 0 : y > 100000000 ? 100000000 : y);
-	}
-
-	// zip the generated y values with the x values
-
-	var res = [];
-	for (var i = 0; i < randomdatabandwidth.length; ++i) {
-		res.push([i, randomdatabandwidth[i]])
-	}
-
-	return res;
+	return ret;
 }
 
 function init_userstaticchart() {
@@ -784,16 +793,25 @@ function init_nettrafficchart(data) {
 	nettrrafficseries =
 	[
 		{
-			data: data,
+			data: data[0],
 			lines:
 			{
-				fill: true
+				fill: false
+			}
+		},
+		{
+			data: data[1],
+			lines:
+			{
+				fill: false
 			}
 		}
 	];
 	var miny=1;
-	for(var i=0;i<data.length;i++)
-	    if (data[i][1]>miny) miny=data[i][1];
+	for(var i=0;i<data[0].length;i++)
+	    if (data[0][i][1]>miny) miny=data[0][i][1];
+	for(var i=0;i<data[1].length;i++)
+	    if (data[1][i][1]>miny) miny=data[1][i][1];
 	nettrafficplot = $.plot(container, nettrrafficseries,
 	{
 		grid:
@@ -862,7 +880,7 @@ function init_nettrafficchart(data) {
 			}
 		},
 		// colors: ['rgba(0, 218, 255, 0.8)', 'rgba(255, 255, 255, 0)']
-		colors: ['rgba(255, 0, 0, 1)']
+		colors: ['rgba(255, 0, 0, 1)', '#f9ff00']
 
 	});
 	nettrafficplot.setData(nettrrafficseries);
@@ -1016,11 +1034,11 @@ $(document).ready(function() {
 			case $(this).hasClass('bandwidthlimit'):
 				var data =$(this).parents('tr').data('data');
 				if ($(this).attr('value')=='true') {
-					$('#bandwidthlimit .limit>label[value="0"]').trigger('click');
+					$('#bandwidthlimit .limit>label[value="1"]').trigger('click');
 					$('#bandwidthlimit .upload').val(data.bandwidthlimit.up);
 					$('#bandwidthlimit .download').val(data.bandwidthlimit.down);
 				} else {
-					$('#bandwidthlimit .limit>label[value="1"]').trigger('click');
+					$('#bandwidthlimit .limit>label[value="0"]').trigger('click');
 				}
 				$('#bandwidthlimit').data('data', data).modal('show');
 				break;
@@ -1038,7 +1056,7 @@ $(document).ready(function() {
 		wirelessstatus();
 	});
 	$('#bandwidthlimit .limit>label').click(function() {
-		if ($(this).attr('value')=='0') {
+		if ($(this).attr('value')=='1') {
 			$('#bandwidthlimit .group-limit').slideDown();
 		} else {
 			$('#bandwidthlimit .group-limit').slideUp().find('input').val(0);

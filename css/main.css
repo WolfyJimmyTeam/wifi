@@ -663,12 +663,19 @@ section#admin h5 {
 	}
 }
 
-/*prioritization*/
-#prioritizationpage-1 .prioritizationView {
+/*smartqos*/
+#smartqospage-1 .smartqosView {
 	height: 200px;
 	width: 348px;
 }
-#prioritizationpage-1 .prioritizationView i {
+#smartqospage-1 .smartqosView>.bar {
+	width: 55px;
+	display: inline-block;
+	margin-right: 5px;
+	text-align: center;
+	position: relative;
+}
+#smartqospage-1 .smartqosView i {
 	border: solid 1px;
 	border-radius: 50%;
 	padding-top: 10px;
@@ -676,10 +683,37 @@ section#admin h5 {
 	color: #ff0d00;
 	width: 55px;
 	height: 55px;
-	top: 34%;
-	left: 17%;
-	position: absolute;
+	position: relative;
+	top: 60px;
 }
-#prioritizationpage-1 .prioritizationView i.fa-play {
+#smartqospage-1 .smartqosView i+.line {
+	border-left: solid 1px;
+	height: 70px;
+	width: 1px;
+	margin: 0 auto;
+	color: #ddd;
+/*	position: relative;
+	top: 60px;*/
+	position: absolute;
+	top: 115px;
+	left: 27px;
+}
+#smartqospage-1 .smartqosView i+.line:before {
+	content: attr(typeDegree);
+	color: #757575;
+	position: absolute;
+	top: -80px;
+	right: -23px;
+	width: 50px;
+}
+#smartqospage-1 .smartqosView i+.line:after {
+	content: attr(typeName);
+	color: #757575;
+	position: absolute;
+	bottom: -28px;
+	right: -23px;
+	width: 50px;
+}
+#smartqospage-1 .smartqosView i.fa-play {
 	padding-left: 5px;
 }

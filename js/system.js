@@ -177,7 +177,9 @@ function gettimeset() {
                     '</tr>').children('tr:last-child').data('data',timeservers).end().find('a').popover();
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -253,7 +255,9 @@ function getserviceset() {
 			$('#servicepagehttpport').val(data.feed.data.httpport);
 			$('#servicepagehttpsport').val(data.feed.data.httpsport);
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -350,7 +354,9 @@ function getnotificationset() {
                     '</tr>').children('tr:last-child').data('data',emails).end().find('a').popover();
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -367,9 +373,9 @@ function notificationset(type) {
     	var notify=null;
     	var inputdatavalue = $(this).find('a').attr('data-value');
     	if($(this).find('a input').prop('checked')) {
-    		notify={type:inputdatavalue,onoff:0};
-    	} else {
     		notify={type:inputdatavalue,onoff:1};
+    	} else {
+    		notify={type:inputdatavalue,onoff:0};
     	}
     	notifytype.push(notify);
 	});
@@ -436,7 +442,9 @@ function getlogset() {
 
 			$('#logstatuspagelogserver').val(data.feed.data.logserver);
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -542,7 +550,9 @@ function getmiscset() {
 				$('#rebootscheduletime').val(data.feed.data.rebootscheduletime);
 			}
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -924,7 +934,9 @@ $(document).ready(function() {
     	$('#modeselect #wirelessrouter').click();
        	$('#systemnavbar.navbar-toggle:visible').click();
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
     });
     $(document).on('click','#modeselect label',function (e) {
     	if($(this).attr('id') == "wirelessrouter")
@@ -947,7 +959,7 @@ $(document).ready(function() {
 
 		$('#modal-wirelessbridge .shift-dns, #modal-accesspoint .shift-dns').hide();
 		$('#modal-wirelessbridge .shift-dns input, #modal-accesspoint .shift-dns input').val('___.___.___.___');
-		$('#modal-wirelessbridge .autodns>label[value="0"], #modal-accesspoint .autodns>label[value="0"]').addClass('active').siblings().removeClass('active');
+		$('#modal-wirelessbridge .autodns>label[value="1"], #modal-accesspoint .autodns>label[value="1"]').addClass('active').siblings().removeClass('active');
 
 		$('#modal-wirelessbridge .wirelessList, #modal-mediabridge .wirelessList').show();
 		$('#modal-'+$('#modeselect>label.active').attr('id')).modal('show');
@@ -977,13 +989,13 @@ $(document).ready(function() {
 				shake();
 				return;
 			}
-			if ($('#modal-'+mode).find('.autodns>label.active').attr('value')=='1' && $('#modal-'+mode).find('.dns1').val()=='___.___.___.___') {
+			if ($('#modal-'+mode).find('.autodns>label.active').attr('value')=='0' && $('#modal-'+mode).find('.dns1').val()=='___.___.___.___') {
 				$('#modal-'+mode).find('.dns1').select();
 				title = 'DNS1';
 				shake();
 				return;
 			}
-			if ($('#modal-'+mode).find('.autodns>label.active').attr('value')=='1' && $('#modal-'+mode).find('.dns2').val()=='___.___.___.___') {
+			if ($('#modal-'+mode).find('.autodns>label.active').attr('value')=='0' && $('#modal-'+mode).find('.dns2').val()=='___.___.___.___') {
 				$('#modal-'+mode).find('.dns2').select();
 				title = 'DNS2';
 				shake();
@@ -1031,10 +1043,10 @@ $(document).ready(function() {
 
 	$('#modal-accesspoint .autodns>label, #modal-wirelessbridge .autodns>label').click(function() {
 		switch ($(this).attr('value')) {
-			case '0':
+			case '1':
 				$('#modal-accesspoint .shift-dns, #modal-wirelessbridge .shift-dns').slideUp();
 				break;
-			case '1':
+			case '0':
 				$('#modal-accesspoint .shift-dns, #modal-wirelessbridge .shift-dns').slideDown();
 				break;
 		}
@@ -1089,7 +1101,7 @@ $(document).ready(function() {
     	$('#timepage').siblings('div.genconfig').attr('style','display:none;');
     	$('#timepage').attr('style','display:block;');
        	$('#systemnavbar.navbar-toggle:visible').click();
-       	if($('#timepageauto>label.active').attr('value')=='0') {
+       	if($('#timepageauto>label.active').attr('value')=='1') {
        		$('#timepagetime').data("DateTimePicker").disable();
        	} else {
        		$('#timepagetime').data("DateTimePicker").enable();
@@ -1098,7 +1110,7 @@ $(document).ready(function() {
     });
 
     $(document).on('click','#timepageauto label',function (e) {
-		if($(this).attr('value')=='0') {
+		if($(this).attr('value')=='1') {
 			$('#timepagetime').data("DateTimePicker").disable();
 		} else {
 			$('#timepagetime').data("DateTimePicker").enable();
@@ -1145,7 +1157,7 @@ $(document).ready(function() {
         $(this).parents('tr').remove();
     });
     $(document).on('click','#timepage .apply',function (e) {
-    	if($('#timepageauto>label.active').attr('value')=='1' && $('#timepagetime').val()=='') {
+    	if($('#timepageauto>label.active').attr('value')=='0' && $('#timepagetime').val()=='') {
     		myalert('Please select and set the datetime');
     		return;
     	}
@@ -1238,7 +1250,7 @@ $(document).ready(function() {
         $(this).parents('tr').remove();
     });
     $(document).on('click','#notificationpage .apply',function (e) {
-    	if($('#notificationpageenable>label.active').attr('value')=='0') {
+    	if($('#notificationpageenable>label.active').attr('value')=='1') {
     		if($('#notificationpagesmtpserver').val()=='') {
 	    		myalert('Please input smtp server');
 	    		return;
@@ -1289,14 +1301,14 @@ $(document).ready(function() {
        	getmiscset();
     });
   	$(document).on('click','#miscpageautologout label',function (e) {
-		if($(this).attr('value')=='1') {
+		if($(this).attr('value')=='0') {
 	  		$('#miscpagetimeout').attr('disabled','disabled');
 	  	} else {
 	  		$('#miscpagetimeout').removeAttr('disabled');
 	  	}
   	});
   	$('#rebootschedule>label').click(function() {
-		if($(this).attr('value')=='1') {
+		if($(this).attr('value')=='0') {
 	  		$('#rebootscheduleweek>label').removeClass('active').addClass('disabled');
 	  		$('#rebootscheduletime').val('').prop('disabled', true);
 	  	} else {

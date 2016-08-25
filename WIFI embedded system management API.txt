@@ -190,7 +190,8 @@ Result:
 object data
 {
 int cpu: less than 100
-int lan: 1024 (bytes)
+int lanup: 1024 (bytes)
+int landown: 1024 (bytes)
 ….
 }
 
@@ -3227,6 +3228,35 @@ string ipv4multicastroute
 string ipv6multicastroute
 string igmpmldsnooping
 string mldfastleave
+}
+
+Result
+
+
+/********************************************************/
+getsmartqosset
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+object data
+{
+int type /*0-game 1-video 2-web 3-download*/
+}
+
+
+/********************************************************/
+smartqosset
+
+method:post
+{
+string method
+string sessionid
+int type
 }
 
 Result

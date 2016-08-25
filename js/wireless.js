@@ -135,7 +135,9 @@ function getwirelessset() {
 				}
 			});
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -234,7 +236,9 @@ function getwirelessguestset() {
 				}
 			});
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -326,7 +330,9 @@ function getwirelesswpsset() {
 				}
 			});
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -428,7 +434,9 @@ function getwirelessaclset() {
 				}
 			});
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -533,8 +541,11 @@ function getwirelessscheduleset() {
 					return false;
 				}
 			});
-
-			updatetrigger=true;
+			setTimeout(function(){
+				setTimeout(function(){
+				updatetrigger=true;
+			},0)
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -619,7 +630,9 @@ function getwirelessradiusset() {
 				}
 			});
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -785,7 +798,9 @@ function getwirelessprofessionset() {
 				}
 			});
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -907,7 +922,9 @@ function getwirelessatfset() {
 				}
 			});
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -1015,7 +1032,9 @@ function getwirelessmeshset() {
 				}
 			});
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}

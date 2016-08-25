@@ -30,7 +30,9 @@ function getlanipset() {
 				$('#lanippagenetmask').val('___.___.___.___');
 			else
 				$('#lanippagenetmask').val(data.feed.data.netmask);
-            updatetrigger=true;
+            setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -172,7 +174,9 @@ function getdhcpserverset() {
                     '<td>'+staticiplist.ip+'</td>'+
                     '</tr>').children('tr:last-child').data('data',staticiplist).end().find('a').popover();
             });
-            updatetrigger=true;
+            setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -273,7 +277,7 @@ $(document).ready(function() {
     });
     $(document).on('click','#dhcpserverpagemanualinput label',function (e) {
    		$('#dhcpserverpagemaclist,#dhcpserverpagemac').parent('div').parent('div').hide();
-       	if($('#dhcpserverpagemanualinput>label.active').attr('value')=='0') {
+       	if($('#dhcpserverpagemanualinput>label.active').attr('value')=='1') {
        		$('#dhcpserverpagemaclist').parent('div').parent('div').show();
        	} else {
        		$('#dhcpserverpagemac').parent('div').parent('div').show();
@@ -286,9 +290,9 @@ $(document).ready(function() {
     	$('#dhcpserverpagemac').val('__:__:__:__:__:__');
     	$('#dhcpserverpagemaclist').val($('#dhcpserverpagemaclist option:eq(0)').val());
     	$('#dhcpserverpageip').val('___.___.___.___');
-   		$('#dhcpserverpagemanualinput>label[value="0"]').trigger('click');
+   		$('#dhcpserverpagemanualinput>label[value="1"]').trigger('click');
    		$('#dhcpserverpagemaclist,#dhcpserverpagemac').parent('div').parent('div').hide();
-       	if($('#dhcpserverpagemanualinput>label.active').attr('value')=='1') {
+       	if($('#dhcpserverpagemanualinput>label.active').attr('value')=='0') {
        		$('#dhcpserverpagemaclist').parent('div').parent('div').show();
        	} else {
        		$('#dhcpserverpagemac').parent('div').parent('div').show();
@@ -303,7 +307,7 @@ $(document).ready(function() {
    });
     $(document).on('click','#adddhcpstaticipok',function (e) {
     	var mac='', ip='';
-    	if($('#dhcpserverpagemanualinput>label.active').attr('value')=='1') {
+    	if($('#dhcpserverpagemanualinput>label.active').attr('value')=='0') {
     		mac = $('#dhcpserverpagemaclist').val();
     	} else {
 	        if($('#dhcpserverpagemac').val()=='___.___.___.___') {

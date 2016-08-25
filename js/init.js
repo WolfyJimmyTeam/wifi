@@ -172,9 +172,9 @@ $(document).ready(function() {
 	$('#connectiontypedesc').text('DHCP allows your PC to obtain an IP address automaticlly. This connection type is often used by cable modem service providers.');
 	$('.dhcpuse').attr('style', 'display:block;');
 	if ($('#selectwandns>[value="0"]').hasClass('active')) {
-		$('.dhcpwandnsuse').attr('style', 'display:block;');
-	} else {
 		$('.dhcpwandnsuse').attr('style', 'display:none;');
+	} else {
+		$('.dhcpwandnsuse').attr('style', 'display:block;');
 	}
 	$(document).on('change', '#connectiontype', function(e) {
 		$('.dhcpuse').attr('style', 'display:none;');
@@ -188,9 +188,9 @@ $(document).ready(function() {
 				$('.dhcpuse').attr('style', 'display:block;');
 				$('#connectiontypedesc').text('DHCP allows your PC to obtain an IP address automaticlly. This connection type is often used by cable modem service providers.');
 				if ($('#selectwandns>[value="0"]').hasClass('active')) {
-					$('.dhcpwandnsuse').attr('style', 'display:block;');
-				} else {
 					$('.dhcpwandnsuse').attr('style', 'display:none;');
+				} else {
+					$('.dhcpwandnsuse').attr('style', 'display:block;');
 				}
 				break;
 			case '1':
@@ -206,51 +206,51 @@ $(document).ready(function() {
 				$('#connectiontypedesc').text('ADSL or other connections that require a username, password and IP address are known as PPTP.');
 				$('.pptpuse').attr('style', 'display:block;')
 				if ($('#selectwandns>[value="0"]').hasClass('active')) {
-					$('.dhcpwandnsuse').attr('style', 'display:block;');
-				} else {
 					$('.dhcpwandnsuse').attr('style', 'display:none;');
+				} else {
+					$('.dhcpwandnsuse').attr('style', 'display:block;');
 				}
 				if ($('#selectpptpipstatic>[value="1"]').hasClass('active')) {
-					$('.pptpstaticipuse').attr('style', 'display:block;');
-				} else {
 					$('.pptpstaticipuse').attr('style', 'display:none;');
+				} else {
+					$('.pptpstaticipuse').attr('style', 'display:block;');
 				}
 				break;
 			case '4':
 				$('#connectiontypedesc').text('L2TP requires a username,password and IP address provided by your ISP.');
 				$('.pptpuse').attr('style', 'display:block;')
 				if ($('#selectwandns>[value="0"]').hasClass('active')) {
-					$('.dhcpwandnsuse').attr('style', 'display:block;');
-				} else {
 					$('.dhcpwandnsuse').attr('style', 'display:none;');
+				} else {
+					$('.dhcpwandnsuse').attr('style', 'display:block;');
 				}
 				if ($('#selectpptpipstatic>[value="1"]').hasClass('active')) {
-					$('.pptpstaticipuse').attr('style', 'display:block;');
-				} else {
 					$('.pptpstaticipuse').attr('style', 'display:none;');
+				} else {
+					$('.pptpstaticipuse').attr('style', 'display:block;');
 				}
 				break;
 		}
 	});
 	$(document).on('click', '#selectwandns', function(e) {
 		if ($('#selectwandns>[value="0"]').hasClass('active')) {
-			$('.dhcpwandnsuse').attr('style', 'display:block;');
-		} else {
 			$('.dhcpwandnsuse').attr('style', 'display:none;');
+		} else {
+			$('.dhcpwandnsuse').attr('style', 'display:block;');
 		}
 	});
 	$(document).on('click', '#selectpptpipstatic', function(e) {
 		if ($('#selectpptpipstatic>[value="1"]').hasClass('active')) {
-			$('.pptpstaticipuse').attr('style', 'display:block;');
-		} else {
 			$('.pptpstaticipuse').attr('style', 'display:none;');
+		} else {
+			$('.pptpstaticipuse').attr('style', 'display:block;');
 		}
 	});
 	$(document).on('click', '#samessidandkey', function(e) {
 		if ($('#samessidandkey>[value="1"]').hasClass('active')) {
-			$('.24Gsame').show();
-		} else {
 			$('.24Gsame').hide();
+		} else {
+			$('.24Gsame').show();
 		}
 	});
 
@@ -284,7 +284,7 @@ $(document).ready(function() {
 	$(document).on('click', '#secstep button:eq(1)', function(e) {
 		switch ($('#connectiontype').val()) {
 			case '0':
-				if ($('#selectwandns>[value="0"]').hasClass('active') && ($('#dns1').val()=='' || $('#dns1').val()=='___.___.___.___')) {
+				if ($('#selectwandns>[value="1"]').hasClass('active') && ($('#dns1').val()=='' || $('#dns1').val()=='___.___.___.___')) {
 					myalert('DNS1 required');
 					return;
 				}
@@ -348,7 +348,7 @@ $(document).ready(function() {
 			thetable.append('<tr><td>Gateway</td><td>' + thetable.data('data').feed.data.dhcpgatewawy + '</td></tr>');
 			thetable.append('<tr><td>Netmask</td><td>' + thetable.data('data').feed.data.dhcpnetmask + '</td></tr>');
 			// thetable.append('<tr><td>MAC</td><td>'+(($('#macaddress').val().indexOf("_")>=0)?'None':$('#macaddress').val())+'</td></tr>');
-			if ($('#selectwandns>[value="0"]').hasClass('active')) {
+			if ($('#selectwandns>[value="1"]').hasClass('active')) {
 				thetable.append('<tr><td>DNS1</td><td>' + (($('#dns1').val().indexOf("_") >= 0) ? 'None' : $('#dns1').val()) + '</td></tr>');
 				thetable.append('<tr><td>DNS2</td><td>' + (($('#dns2').val().indexOf("_") >= 0) ? 'None' : $('#dns2').val()) + '</td></tr>');
 			}
@@ -369,38 +369,38 @@ $(document).ready(function() {
 			thetable.append('<tr><td>Username</td><td>' + $('#vpnusername').val() + '</td></tr>');
 			thetable.append('<tr><td>Password</td><td>' + $('#vpnpassword').val() + '</td></tr>');
 			if ($('#selectpptpipstatic>[value="0"]').hasClass('active')) {
-				thetable.append('<tr><td>IP</td><td>Auto Assignment</td></tr>');
-			} else {
 				thetable.append('<tr><td>IP</td><td>' + (($('#ipaddress').val().indexOf("_") >= 0) ? 'None' : $('#ipaddress').val()) + '</td></tr>');
 				thetable.append('<tr><td>Netmask</td><td>' + (($('#netmask').val().indexOf("_") >= 0) ? 'None' : $('#netmask').val()) + '</td></tr>');
 				thetable.append('<tr><td>Gateway</td><td>' + (($('#gateway').val().indexOf("_") >= 0) ? 'None' : $('#gateway').val()) + '</td></tr>');
+			} else {
+				thetable.append('<tr><td>IP</td><td>Auto Assignment</td></tr>');
 			}
-			if ($('#selectwandns>[value="0"]').hasClass('active')) {
+			if ($('#selectwandns>[value="1"]').hasClass('active')) {
 				thetable.append('<tr><td>DNS1</td><td>' + (($('#dns1').val().indexOf("_") >= 0) ? 'None' : $('#dns1').val()) + '</td></tr>');
 				thetable.append('<tr><td>DNS2</td><td>' + (($('#dns2').val().indexOf("_") >= 0) ? 'None' : $('#dns2').val()) + '</td></tr>');
 			}
 			thetable.append('<tr><td>VPN Server</td><td>' + (($('#vpnserver').val().indexOf("_") >= 0) ? 'None' : $('#vpnserver').val()) + '</td></tr>');
 		}
 		if ($('#samessidandkey>[value="0"]').hasClass('active')) {
-			thetable.append('<tr><td>2.4G/5G SSID</td><td>Same SSID and Key</td></tr>');
-			thetable.append('<tr><td>SSID</td><td>' + $('#24gssid').val() + '</td></tr>');
-			// thetable.append('<tr><td>Key</td><td>'+$('#24gkey').val()+'</td></tr>');
-		} else {
 			thetable.append('<tr><td>2.4G SSID</td><td>' + $('#24gssid').val() + '</td></tr>');
 			// thetable.append('<tr><td>2.4G Key</td><td>'+$('#24gkey').val()+'</td></tr>');
 			thetable.append('<tr><td>5G SSID</td><td>' + $('#5gssid').val() + '</td></tr>');
 			// thetable.append('<tr><td>5G Key</td><td>'+$('#5gkey').val()+'</td></tr>');
+		} else {
+			thetable.append('<tr><td>2.4G/5G SSID</td><td>Same SSID and Key</td></tr>');
+			thetable.append('<tr><td>SSID</td><td>' + $('#24gssid').val() + '</td></tr>');
+			// thetable.append('<tr><td>Key</td><td>'+$('#24gkey').val()+'</td></tr>');
 		}
 		thetable.append('<tr><td>LAN IP</td><td>' + $('#lanip').val() + '</td></tr>');
 	});
 	$(document).on('blur', '#firststep .verify', function(e) {
-		if ($('#useadminpassaskey>[value="1"]').hasClass('active')) {
+		if ($('#useadminpassaskey>[value="0"]').hasClass('active')) {
 			$('#24gkey, #5gkey').val($('#firststep .verify').val());
 			$('#24gkey, #5gkey').prop('disabled', true);
 		}
 	});
 	$(document).on('click', '#useadminpassaskey', function(e) {
-		if ($('#useadminpassaskey>[value="1"]').hasClass('active')) {
+		if ($('#useadminpassaskey>[value="0"]').hasClass('active')) {
 			$('#24gkey, #5gkey').val($('#firststep .verify').val());
 			$('#24gkey, #5gkey').prop('disabled', true);
 		} else {

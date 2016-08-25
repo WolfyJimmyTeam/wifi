@@ -77,7 +77,9 @@ function getpptpserverset() {
             $('#pptpvpnadavncestartip').val(data.feed.data.clientipstart);
             $('#pptpvpnadavnceendip').val(data.feed.data.clientipend);
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -347,7 +349,9 @@ function getopenvpnserverset() {
 
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
         } else {
             myalert(data.feed.msg);
         }
@@ -788,7 +792,9 @@ function getfirewallcommonset() {
             $('#denypingtowanenable>label[value="'+data.feed.data.denypingtowan+'"]').trigger('click');
             $('#igmpmldenable>label[value="'+data.feed.data.igmpmld+'"]').trigger('click');
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
         } else {
             myalert(data.feed.msg);
         }
@@ -872,7 +878,9 @@ function getfirewallurlset() {
             });
             $('#urlfilterschedule').setdata(data.feed.data.schedule);
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
         } else {
             myalert(data.feed.msg);
         }
@@ -952,7 +960,9 @@ function getfirewallkeywordset() {
             });
             $('#keywordfilterschedule').setdata(data.feed.data.schedule);
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
         } else {
             myalert(data.feed.msg);
         }
@@ -1028,7 +1038,9 @@ function getfirewallnetservicewellknownservice() {
                 $('#netservicefilterwellknownservice').append('<option value="'+services.servicename+'">'+services.servicename+'</option>')
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
         } else {
             myalert(data.feed.msg);
         }
@@ -1085,7 +1097,9 @@ function getfirewallnetserviceset() {
             });
             $('#netservicefilterschedule').setdata(data.feed.data.schedule);
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
         } else {
             myalert(data.feed.msg);
         }
@@ -1170,7 +1184,9 @@ function getfirewallipv6wellknownservice() {
                 $('#ipv6filterwellknownservice').append('<option value="'+services.servicename+'">'+services.servicename+'</option>')
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
         } else {
             myalert(data.feed.msg);
         }
@@ -1225,7 +1241,9 @@ function getfirewallipv6filterset() {
             });
             $('#ipv6filterschedule').setdata(data.feed.data.schedule);
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
         } else {
             myalert(data.feed.msg);
         }
@@ -1369,7 +1387,9 @@ function getipv6default(type) {
             $('#ipv6dns2').val(data.feed.data.dns2);
             $('#ipv6dns3').val(data.feed.data.dns3);
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
         } else {
             myalert(data.feed.msg);
         }
@@ -1481,7 +1501,9 @@ function getipv6set() {
             $('#ipv6dns2').val(data.feed.data.dns2);
             $('#ipv6dns3').val(data.feed.data.dns3);
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
        } else {
             myalert(data.feed.msg);
         }
@@ -1633,7 +1655,9 @@ function getmulticastset() {
             $('#multicastigmpmldsnooping>label[value="'+data.feed.data.igmpmldsnooping+'"]').trigger('click');
             $('#multicastmldfastleave>label[value="'+data.feed.data.mldfastleave+'"]').trigger('click');
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
        } else {
             myalert(data.feed.msg);
         }
@@ -1650,6 +1674,64 @@ function multicastset() {
         ipv6multicastroute:Number($('#multicastipv6multicastroute').val()),
         igmpmldsnooping:Number($('#multicastigmpmldsnooping>label.active').attr('value')),
         mldfastleave:Number($('#multicastmldfastleave>label.active').attr('value')),
+    };
+    // $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+        var data =
+        {
+            stat: 'success',
+            feed:
+            {
+                msg: 'Success',
+            }
+        };
+       if (data.stat == 'success') {
+			$('body').removeData('check');
+            myalert('ok');
+        } else {
+            myalert(data.feed.msg);
+        }
+    // }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+
+function getsmartqosset() {
+
+    var postData =
+    {
+        method: 'getsmartqosset',
+        sessionid: sessionID
+    };
+
+    // $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+        var data =
+        {
+            stat: 'success',
+            feed:
+            {
+                msg: 'Success',
+                data: {
+                	type: 0
+                }
+            }
+        };
+       if (data.stat == 'success') {
+			updatetrigger=false;
+
+			$('#smartqospage-1 .type>label[value="'+data.feed.data.type+'"]').trigger('click');
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
+       } else {
+            myalert(data.feed.msg);
+        }
+    // }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+
+function smartqosset() {
+    var postData =
+    {
+        method: 'smartqosset',
+        sessionid: sessionID,
+        type:0
     };
     // $.post(serverURL, postData, function(data, textStatus, jqXHR) {
         var data =
@@ -1705,7 +1787,9 @@ function get80211tosset() {
                     '<td>'+lists.ssid+'</td>'+'<td>'+$('#80211tospageremarkdesc').find('option[value="'+lists.remarkdesc+'"]').text()+'</td></tr>').children('tr:last-child').data('data',lists).end().find('a').popover();
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
        } else {
             myalert(data.feed.msg);
         }
@@ -1779,7 +1863,9 @@ function getiptvset() {
                     '<td>'+lists.sourceiptv+'</td>'+'<td>'+$('#iptvpageremarkdesc').find('option[value="'+lists.remarkdesc+'"]').text()+'</td></tr>').children('tr:last-child').data('data',lists).end().find('a').popover();
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
        } else {
             myalert(data.feed.msg);
         }
@@ -1853,7 +1939,9 @@ function getremarkwwmset() {
                     '<td>'+lists.ssid+'</td>'+'<td>'+$('#remarkingwmmlist').find('option[value="'+lists.remarkwwm+'"]').text()+'</td></tr>').children('tr:last-child').data('data',lists).end().find('a').popover();
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
        } else {
             myalert(data.feed.msg);
         }
@@ -1925,15 +2013,19 @@ function getprioritizationset() {
 
             $('.prioritizationlist tbody').empty();
             $.each(data.feed.data.lists,function (index,lists) {
-                if(lists.type==0)
+                // if(lists.type==0)
+                //     $('.prioritizationlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
+                //         '<td>'+$('#prioritizationtype>label[value="0"]').text().trim()+'</td>'+'<td>'+lists.target+'</td>'+'<td>'+lists.mark+'</td>'+'</tr>').children('tr:last-child').data('data',lists).end().find('a').popover();
+                // else
+                //     $('.prioritizationlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
+                //         '<td>'+$('#prioritizationtype>label[value="1"]').text().trim()+'</td>'+'<td>'+$('#prioritizationapptype').find('option[value="'+lists.target+'"]').text()+'</td>'+'<td>'+lists.mark+'</td>'+'</tr>').children('tr:last-child').data('data',lists).end().find('a').popover();
                     $('.prioritizationlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
-                        '<td>'+$('#prioritizationtype>label[value="0"]').text().trim()+'</td>'+'<td>'+lists.target+'</td>'+'<td>'+lists.mark+'</td>'+'</tr>').children('tr:last-child').data('data',lists).end().find('a').popover();
-                else
-                    $('.prioritizationlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
-                        '<td>'+$('#prioritizationtype>label[value="1"]').text().trim()+'</td>'+'<td>'+$('#prioritizationapptype').find('option[value="'+lists.target+'"]').text()+'</td>'+'<td>'+lists.mark+'</td>'+'</tr>').children('tr:last-child').data('data',lists).end().find('a').popover();
+                        '<td>Device</td>'+'<td>'+lists.target+'</td>'+'<td>'+lists.mark+'</td>'+'</tr>').children('tr:last-child').data('data',lists).end().find('a').popover();
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
        } else {
             myalert(data.feed.msg);
         }
@@ -2007,7 +2099,9 @@ function getwakeonlanset() {
                     '<td>'+lists.devicename+'</td>'+'<td>'+lists.mac+'</td>'+'</tr>').children('tr:last-child').data('data',lists).end().find('a').popover();
             });
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
        } else {
             myalert(data.feed.msg);
         }
@@ -2202,7 +2296,9 @@ $(document).ready(function() {
 
         $('#ipv6configtype').trigger('change');
 
-			updatetrigger=true;
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
 	});
 
 
@@ -2218,7 +2314,7 @@ $(document).ready(function() {
    		switch($(this).val()) {
    			case '1':
    				$('.ipv6native').attr('style','display:block;');
-   				if($('#ipv6simulatneous>label.active').attr('value')=='1') {
+   				if($('#ipv6simulatneous>label.active').attr('value')=='0') {
    					$('#ipv6simulatneoustype').parent('div').parent('div').attr('style','display:none;');
    				} else {
    					$('#ipv6simulatneoustype').parent('div').parent('div').attr('style','display:block;');
@@ -2228,7 +2324,7 @@ $(document).ready(function() {
 	   					$('.assigntypedhcpv6').attr('style','display:block;');
 	   				}
    				}
-				if($('#ipv6autodns>label.active').attr('value')=='0') {
+				if($('#ipv6autodns>label.active').attr('value')=='1') {
 					$('.ipv6dns').attr('style','display:none;');
 				} else {
 					$('.ipv6dns').attr('style','display:block;');
@@ -2272,7 +2368,7 @@ $(document).ready(function() {
    		}
    });
    $(document).on('click','#ipv6simulatneous label',function (e) {
-		if($(this).attr('value')=='1') {
+		if($(this).attr('value')=='0') {
 			$('#ipv6simulatneoustype').parent('div').parent('div').attr('style','display:none;');
 		} else {
 			$('#ipv6simulatneoustype').parent('div').parent('div').attr('style','display:block;');
@@ -2286,7 +2382,7 @@ $(document).ready(function() {
 		}
    });
    $(document).on('click','#ipv6autodns label',function (e) {
-		if($(this).attr('value')=='0') {
+		if($(this).attr('value')=='1') {
 			$('.ipv6dns').attr('style','display:none;');
 		} else {
 			$('.ipv6dns').attr('style','display:block;');
@@ -2316,11 +2412,11 @@ $(document).ready(function() {
 	});
 
     $("a[href='#qosconfigpage']").on('shown.bs.tab', function(e) {
-        $('#80211tosindex').parent('li').siblings('li').removeClass('active');
-        $('#80211tosindex').parent('li').addClass('active');
-        $('#80211tospage').siblings('div.genconfig').attr('style','display:none;');
-        $('#80211tospage').attr('style','display:block;');
-        get80211tosset();
+        $('#smartqosindex').parent('li').siblings('li').removeClass('active');
+        $('#smartqosindex').parent('li').addClass('active');
+        $('#smartqospage').siblings('div.genconfig').attr('style','display:none;');
+        $('#smartqospage').attr('style','display:block;');
+        getsmartqosset();
     });
 
 	$("a[href='#multicast']").on('shown.bs.tab', function(e) {
@@ -2858,7 +2954,7 @@ $(document).ready(function() {
         for(var i=0;i<maclists.length;i++) {
             $('#wakeonlanconfigpagemaclist').append('<option>'+maclists[i]+'</option>');
         }
-        $('#wakeonlanconfigpagemanualinput>label[value="1"]').trigger('click')
+        $('#wakeonlanconfigpagemanualinput>label[value="0"]').trigger('click')
         $('#wakeonlanconfigpagedevicename').val('');
         $('#wakeonlanconfigpagemac').val('__:__:__:__:__:__');
     });
@@ -2867,7 +2963,7 @@ $(document).ready(function() {
         var mac="";
         $('.wakeupmaclist tbody tr').each( function (index,lists) {
             var lists = $(this).data('data');
-            if($('#wakeonlanconfigpagemanualinput>label.active').attr('value')=='0') {
+            if($('#wakeonlanconfigpagemanualinput>label.active').attr('value')=='1') {
                 mac = $('#wakeonlanconfigpagemac').val();
             } else {
                 mac = $('#wakeonlanconfigpagemaclist').val();
@@ -2915,7 +3011,7 @@ $(document).ready(function() {
     $(document).on('click','#wakeonlanconfigpagemanualinput label',function (e) {
         $('.wakeonlanconfigpagemaclistoption').attr('style','display:none;');
         $('.wakeonlanconfigpagemacoption').attr('style','display:none;');
-        if($(this).attr('value')=='0') {
+        if($(this).attr('value')=='1') {
             $('.wakeonlanconfigpagemacoption').attr('style','display:block;');
         } else {
             $('.wakeonlanconfigpagemaclistoption').attr('style','display:block;');
@@ -2961,7 +3057,7 @@ $(document).ready(function() {
 
 		if($(this).attr('value')=='1') {
     		$('.openvpnadvance').attr('style','display:block;');
-			if($('#openvpnserverinterface>label.active').attr('value')=='0') {
+			if($('#openvpnserverinterface>label.active').attr('value')=='1') {
 				$('.vpnservertun').attr('style','display:block;');
 				if($('#openvpnserverauthmode').val()=='0') {
 			    	$('.vpnservertls').attr('style','display:block;');
@@ -2985,7 +3081,7 @@ $(document).ready(function() {
     $(document).on('click','#openvpnserverallocatefromdhcp label',function (e) {
     	$('.vpnserverdhcpon').attr('style','display:none;');
 
-		if($(this).attr('value')=='1') {
+		if($(this).attr('value')=='0') {
 			$('.vpnserverdhcpon').attr('style','display:block;');
 		}
     });
@@ -3000,7 +3096,7 @@ $(document).ready(function() {
     	$('.vpnservertaptls').attr('style','display:none;');
     	$('.vpnserverdhcpon').attr('style','display:none;');
 
-		if($(this).attr('value')=='0') {
+		if($(this).attr('value')=='1') {
 			$('.vpnservertun').attr('style','display:block;');
 			if($('#openvpnserverauthmode').val()=='0') {
 		    	$('.vpnservertls').attr('style','display:block;');
@@ -3032,7 +3128,7 @@ $(document).ready(function() {
 
 		if($(this).val()=='0') {
 	    	$('.vpnservertls').attr('style','display:block;');
-			if($('#openvpnserverinterface>label.active').attr('value')=='0') {
+			if($('#openvpnserverinterface>label.active').attr('value')=='1') {
 		    	$('.vpnservertun').attr('style','display:block;');
 		    	$('.vpnservertuntls').attr('style','display:block;');
 			} else {
@@ -3040,7 +3136,7 @@ $(document).ready(function() {
 		    	$('.vpnservertaptls').attr('style','display:block;');
 			}
 		} else {
-			if($('#openvpnserverinterface>label.active').attr('value')=='0') {
+			if($('#openvpnserverinterface>label.active').attr('value')=='1') {
 		    	$('.vpnservertun').attr('style','display:block;');
 		    	$('.vpnservertunstatic').attr('style','display:block;');
 			} else {
@@ -3131,7 +3227,7 @@ $(document).ready(function() {
     	$(this).attr('style','display:none;');
         $('#vpnclienttype').removeAttr('disabled');
         $('#vpnclienttype').val(0).trigger('change');
-        $('#vpnclientdefaultroute>label[value="0"]').trigger('click');
+        $('#vpnclientdefaultroute>label[value="1"]').trigger('click');
         $('#vpnclientdesc').val('');
         $('#vpnclientvpnserver').val('');
         $('#vpnclientusername').val('');
@@ -3140,7 +3236,7 @@ $(document).ready(function() {
         $('#vpnclientpassword').val('');
         $('#vpnclientpptpencryption').val(0).trigger('change');
         $('#vpnclientimportovpn').val('');
-        $('#vpnclientreqcaandkey>label[value="1"]').trigger('click');
+        $('#vpnclientreqcaandkey>label[value="0"]').trigger('click');
         $('#vpnclientimportca').val('');
         $('#vpnclientcertificate').val('');
         $('#vpnclientclientcertificate').val();
@@ -3247,7 +3343,7 @@ $(document).ready(function() {
 			case '2':
 				$('.openvpnclientonly, .openvpnclientreqcert, .pptpvpnclientonly').hide();
 				$('.openvpnclientonly').show();
-				if ($('#vpnclientreqcaandkey>label.active').attr('value') == '0') {
+				if ($('#vpnclientreqcaandkey>label.active').attr('value') == '1') {
 					$('.openvpnclientreqcert').show();
 				}
 				break;
@@ -3256,7 +3352,7 @@ $(document).ready(function() {
 
    $(document).on('click','#vpnclientreqcaandkey  label',function (e) {
     	$('.openvpnclientreqcert').attr('style','display:none;');
-	   	if($(this).attr('value')=='0') {
+	   	if($(this).attr('value')=='1') {
 	    	$('.openvpnclientreqcert').attr('style','display:block;');
 	    }
    });
@@ -3456,18 +3552,18 @@ $(document).ready(function() {
         $('#prioritizationmaclist').empty();
         for(var i=0; i<macs.length;i++)
             $('#prioritizationmaclist').append('<option>'+macs[i]+'</option>');
-        $('#prioritizationtype>label[value="0"]').trigger('click')
+        // $('#prioritizationtype>label[value="1"]').trigger('click')
         $('#prioritizationmanualinput>label[value="1"]').trigger('click')
-    	if($('#prioritizationtype>label.active').attr('value')=="0") {
-            $('.prioritizationmanual').attr('style','display:block;');
-            if($('#prioritizationmanualinput>label.active').attr('value')=="0") {
-                $('.prioritizationmanualmac').attr('style','display:block;');
-            } else {
-                $('.prioritizationmac').attr('style','display:block;');
-            }
-    	} else {
-    		$('.prioritizationapp').attr('style','display:block;');
-    	}
+    	// if($('#prioritizationtype>label.active').attr('value')=="1") {
+     //        $('.prioritizationmanual').attr('style','display:block;');
+     //        if($('#prioritizationmanualinput>label.active').attr('value')=="1") {
+     //            $('.prioritizationmanualmac').attr('style','display:block;');
+     //        } else {
+     //            $('.prioritizationmac').attr('style','display:block;');
+     //        }
+    	// } else {
+    	// 	$('.prioritizationapp').attr('style','display:block;');
+    	// }
         $('#prioritizationapptype').val($('#prioritizationapptype option:eq(0)').val());
         $('#prioritizationmark').val('');
         $('#prioritizationmacinput').val('__:__:__:__:__:__');
@@ -3478,20 +3574,20 @@ $(document).ready(function() {
         var target = "";
         $('.prioritizationlist tbody tr').each( function (index,lists) {
             var lists = $(this).data('data');
-            if(Number($('#prioritizationtype>label.active').attr('value'))==0) {
-                if($('#prioritizationmanualinput>label.active').attr('value')=="0")
+            // if(Number($('#prioritizationtype>label.active').attr('value'))==1) {
+                if($('#prioritizationmanualinput>label.active').attr('value')=="1")
                     target = $('#prioritizationmacinput').val();
                 else
                     target = $('#prioritizationmaclist').val();
                 if(target == '__:__:__:__:__:__') target = "";
-            } else {
-                 target = $('#prioritizationapptype').val();
-            }
-            if(lists.type == Number($('#prioritizationtype').val()) && lists.target == target) {
-                myalert('Item had existed.');
-                founditem=true;
-                return;
-            }
+            // } else {
+            //      target = $('#prioritizationapptype').val();
+            // }
+            // if(lists.type == Number($('#prioritizationtype').val()) && lists.target == target) {
+            //     myalert('Item had existed.');
+            //     founditem=true;
+            //     return;
+            // }
         });
         if(target == "") {
             myalert('Target need to input.');
@@ -3503,16 +3599,19 @@ $(document).ready(function() {
         }
         if(founditem) return;
         var list = {
-            type:Number($('#prioritizationtype>label.active').attr('value')),
+            // type:Number($('#prioritizationtype>label.active').attr('value')),
+            type:0,
             target:target,
             mark:Number($('#prioritizationmark').val())
         }
-        if(list.type==0)
+        // if(list.type==0)
+        //     $('.prioritizationlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
+        //         '<td>'+$('#prioritizationtype>label[value="0"]').text().trim()+'</td>'+'<td>'+list.target+'</td>'+'<td>'+list.mark+'</td>'+'</tr>').children('tr:last-child').data('data',list).end().find('a').popover();
+        // else
+        //     $('.prioritizationlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
+        //         '<td>'+$('#prioritizationtype>label[value="1"]').text().trim()+'</td>'+'<td>'+$('#prioritizationapptype').find('option[value="'+list.target+'"]').text()+'</td>'+'<td>'+list.mark+'</td>'+'</tr>').children('tr:last-child').data('data',list).end().find('a').popover();
             $('.prioritizationlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
-                '<td>'+$('#prioritizationtype>label[value="0"]').text().trim()+'</td>'+'<td>'+list.target+'</td>'+'<td>'+list.mark+'</td>'+'</tr>').children('tr:last-child').data('data',list).end().find('a').popover();
-        else
-            $('.prioritizationlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
-                '<td>'+$('#prioritizationtype>label[value="1"]').text().trim()+'</td>'+'<td>'+$('#prioritizationapptype').find('option[value="'+list.target+'"]').text()+'</td>'+'<td>'+list.mark+'</td>'+'</tr>').children('tr:last-child').data('data',list).end().find('a').popover();
+                '<td>Device</td>'+'<td>'+list.target+'</td>'+'<td>'+list.mark+'</td>'+'</tr>').children('tr:last-child').data('data',list).end().find('a').popover();
     	$('.prioritizationadd').attr('style','display:none;');
     	$('.prioritizationlist').attr('style','display:block;');
     	$('#addprioritization').attr('style','display:block;');
@@ -3523,26 +3622,26 @@ $(document).ready(function() {
     	$('#addprioritization').attr('style','display:block;');
     });
 
-    $(document).on('click','#prioritizationtype label',function (e) {
-    	$('.prioritizationmac').attr('style','display:none;');
-    	$('.prioritizationapp').attr('style','display:none;');
-        $('.prioritizationmanual').attr('style','display:none;');
-        $('.prioritizationmanualmac').attr('style','display:none;');
-    	if($(this).attr('value')=="0") {
-            $('.prioritizationmanual').attr('style','display:block;');
-            if($('#prioritizationmanualinput>label.active').attr('value')=="0") {
-                $('.prioritizationmanualmac').attr('style','display:block;');
-            } else {
-                $('.prioritizationmac').attr('style','display:block;');
-            }
-    	} else {
-    		$('.prioritizationapp').attr('style','display:block;');
-    	}
-    });
+    // $(document).on('click','#prioritizationtype label',function (e) {
+    // 	$('.prioritizationmac').attr('style','display:none;');
+    // 	$('.prioritizationapp').attr('style','display:none;');
+    //     $('.prioritizationmanual').attr('style','display:none;');
+    //     $('.prioritizationmanualmac').attr('style','display:none;');
+    // 	if($(this).attr('value')=="1") {
+    //         $('.prioritizationmanual').attr('style','display:block;');
+    //         if($('#prioritizationmanualinput>label.active').attr('value')=="1") {
+    //             $('.prioritizationmanualmac').attr('style','display:block;');
+    //         } else {
+    //             $('.prioritizationmac').attr('style','display:block;');
+    //         }
+    // 	} else {
+    // 		$('.prioritizationapp').attr('style','display:block;');
+    // 	}
+    // });
     $(document).on('click','#prioritizationmanualinput label',function (e) {
         $('.prioritizationmac').attr('style','display:none;');
         $('.prioritizationmanualmac').attr('style','display:none;');
-        if($(this).attr('value')=="0") {
+        if($(this).attr('value')=="1") {
             $('.prioritizationmanualmac').attr('style','display:block;');
         } else {
             $('.prioritizationmac').attr('style','display:block;');
@@ -3554,6 +3653,115 @@ $(document).ready(function() {
     $(document).on('click','#prioritizationpage .apply',function (e) {
         prioritizationset();
     });
+
+    $(document).on('click','#smartqosindex',function (e) {
+        try {
+            if ($('body').data('check').change == true) return;
+        } catch (e) {}
+    	$(this).parents('ul').children('li').removeClass('active');
+    	$(this).parent('li').addClass('active');
+    	$('#smartqospage').siblings('div.genconfig').attr('style','display:none;');
+    	$('#smartqospage').attr('style','display:block;');
+       	$('#qosnavbar.navbar-toggle:visible').click();
+        getsmartqosset();
+    });
+
+    $(document).on('click','#smartqospage .apply',function (e) {
+        smartqosset();
+    });
+	$('#smartqospage-1 .type>label').click(function() {
+		if ($(this).hasClass('active')) return;
+		switch ($(this).attr('value')) {
+			case '0':
+				$('#smartqospage-1 .smartqosView .line')
+					.attr('typeDegree', 'Mid')
+					.animate({
+						height: '70px',
+						top: '115px'
+					}, 300);
+				$('#smartqospage-1 .smartqosView i')
+					.animate({top: '60px'}, 300);
+				break;
+			case '1':
+				$('#smartqospage-1 .bar:nth-child(1)>.line')
+					.attr('typeDegree', 'High')
+					.animate({
+						height: '130px',
+						top: '55px'
+					}, 300);
+				$('#smartqospage-1 .bar:nth-child(1)>i')
+					.animate({top: 0}, 300);
+				$('#smartqospage-1 .bar:nth-child(2)>.line, #smartqospage-1 .bar:nth-child(3)>.line')
+					.attr('typeDegree', 'Mid')
+					.animate({
+						height: '70px',
+						top: '115px'
+					}, 300);
+				$('#smartqospage-1 .bar:nth-child(2)>i, #smartqospage-1 .bar:nth-child(3)>i')
+					.animate({top: '60px'}, 300);
+				$('#smartqospage-1 .bar:nth-child(4)>.line')
+					.attr('typeDegree', 'Low')
+					.animate({
+						height: 0,
+						top: '185px'
+					}, 300);
+				$('#smartqospage-1 .bar:nth-child(4)>i')
+					.animate({top: '130px'}, 300);
+				break;
+			case '2':
+				$('#smartqospage-1 .bar:nth-child(2)>.line')
+					.attr('typeDegree', 'High')
+					.animate({
+						height: '130px',
+						top: '55px'
+					}, 300);
+				$('#smartqospage-1 .bar:nth-child(2)>i')
+					.animate({top: 0}, 300);
+				$('#smartqospage-1 .bar:nth-child(1)>.line, #smartqospage-1 .bar:nth-child(3)>.line')
+					.attr('typeDegree', 'Mid')
+					.animate({
+						height: '70px',
+						top: '115px'
+					}, 300);
+				$('#smartqospage-1 .bar:nth-child(1)>i, #smartqospage-1 .bar:nth-child(3)>i')
+					.animate({top: '60px'}, 300);
+				$('#smartqospage-1 .bar:nth-child(4)>.line')
+					.attr('typeDegree', 'Low')
+					.animate({
+						height: 0,
+						top: '185px'
+					}, 300);
+				$('#smartqospage-1 .bar:nth-child(4)>i')
+					.animate({top: '130px'}, 300);
+				break;
+			case '3':
+				$('#smartqospage-1 .bar:nth-child(3)>.line')
+					.attr('typeDegree', 'High')
+					.animate({
+						height: '130px',
+						top: '55px'
+					}, 300);
+				$('#smartqospage-1 .bar:nth-child(3)>i')
+					.animate({top: 0}, 300);
+				$('#smartqospage-1 .bar:nth-child(1)>.line, #smartqospage-1 .bar:nth-child(2)>.line')
+					.attr('typeDegree', 'Mid')
+					.animate({
+						height: '70px',
+						top: '115px'
+					}, 300);
+				$('#smartqospage-1 .bar:nth-child(1)>i, #smartqospage-1 .bar:nth-child(2)>i')
+					.animate({top: '60px'}, 300);
+				$('#smartqospage-1 .bar:nth-child(4)>.line')
+					.attr('typeDegree', 'Low')
+					.animate({
+						height: 0,
+						top: '185px'
+					}, 300);
+				$('#smartqospage-1 .bar:nth-child(4)>i')
+					.animate({top: '130px'}, 300);
+				break;
+		}
+	});
 
 
 });
