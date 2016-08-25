@@ -3028,6 +3028,21 @@
 															</div>
 														</div>
 														<div class="col-md-2 ltetype" style="display:none;">
+															<div class="formGroup">
+																<span class="label-title">Config</span>
+																<div class="btn-group lteconfig" data-toggle="buttons">
+																	<label class="btn btn-checkbox active" value="0">
+																		<input type="radio">Basic
+																	</label>
+																	<label class="btn btn-checkbox" value="1">
+																		<input type="radio">Advance
+																	</label>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-md-2 ltetype" style="display:none;">
 															<div class="formGroup select-icon">
 																<span class="label-title">LTE Mode</span>
 																<select class="input-all">
@@ -3057,25 +3072,25 @@
 														</div>
 													</div>
 													<div class="row">
-														<div class="col-md-2 ltetype" style="display:none;">
+														<div class="col-md-2 lteadv" style="display:none;">
 															<div class="formGroup">
 																<span class="label-title">APN</span>
 																<span class="display-all">internet</span>
 															</div>
 														</div>
-														<div class="col-md-3 ltetype" style="display:none;">
+														<div class="col-md-3 lteadv" style="display:none;">
 															<div class="formGroup">
 																<span class="label-title">Dial Number</span>
 																<input type="text" class="input-all" placeholder="String">
 															</div>
 														</div>
-														<div class="col-md-3 ltetype" style="display:none;">
+														<div class="col-md-3 lteadv" style="display:none;">
 															<div class="formGroup">
 																<span class="label-title">Username</span>
 																<input type="text" class="input-all" placeholder="String">
 															</div>
 														</div>
-														<div class="col-md-3 ltetype" style="display:none;">
+														<div class="col-md-3 lteadv" style="display:none;">
 															<div class="formGroup">
 																<span class="label-title">Password</span>
 																<input type="password" class="input-all" placeholder="Password" data-seepw="see password">
@@ -3083,7 +3098,7 @@
 														</div>
 													</div>
 													<div class="row">
-														<div class="col-md-2 ltetype" style="display:none;">
+														<div class="col-md-2 lteadv" style="display:none;">
 															<div class="formGroup">
 																<span class="label-title">Roaming</span>
 																<div class="btn-group" data-toggle="buttons">
@@ -3096,24 +3111,27 @@
 																</div>
 															</div>
 														</div>
-														<div class="col-md-3 ltetype" style="display:none;">
+														<div class="col-md-3 lteadv" style="display:none;">
 															<div class="formGroup">
 																<span class="label-title">Preferred System</span>
 																<input type="text" class="input-all" placeholder="String">
 															</div>
 														</div>
-														<div class="col-md-3 ltetype" style="display:none;">
-															<div class="formGroup">
+														<div class="col-md-3 lteadv" style="display:none;">
+															<div class="formGroup select-icon">
 																<span class="label-title">IP type</span>
-																<input type="text" class="input-all ipinput" placeholder="String">
+																<select class="input-all">
+																	<option value="0" selected>IPV4</option>
+																	<option value="1">IPV6</option>
+																</select>
 															</div>
 														</div>
-														<div class="col-md-2 ltetype" style="display:none;">
+														<div class="col-md-2 lteadv" style="display:none;">
 															<button class="btn btn-default btn-lg" role="button">Network Search</button>
 														</div>
 													</div>
 													<div class="row">
-														<div class="col-md-2 ltetype" style="display:none;">
+														<div class="col-md-2 lteadv" style="display:none;">
 															<div class="formGroup">
 																<span class="label-title">Auto Start</span>
 																<div class="btn-group" data-toggle="buttons">
@@ -3126,7 +3144,7 @@
 																</div>
 															</div>
 														</div>
-														<div class="col-md-2 ltetype" style="display:none;">
+														<div class="col-md-2 lteadv" style="display:none;">
 															<div class="formGroup">
 																<span class="label-title">Fallback to EtherWan</span>
 																<div class="btn-group" data-toggle="buttons">
@@ -3139,63 +3157,10 @@
 																</div>
 															</div>
 														</div>
-														<div class="col-md-2 ltetype" style="display:none;">
+														<div class="col-md-2 lteadv" style="display:none;">
 															<div class="formGroup">
 																<span class="label-title">LTE Connection Status</span>
 																<span class="display-all">Connect</span>
-															</div>
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-md-2 ltetype" style="display:none;">
-															<div class="formGroup">
-																<span class="label-title">Config</span>
-																<div class="btn-group lteconfig" data-toggle="buttons">
-																	<label class="btn btn-checkbox active" value="0">
-																		<input type="radio">Basic
-																	</label>
-																	<label class="btn btn-checkbox" value="1">
-																		<input type="radio">Advance
-																	</label>
-																</div>
-															</div>
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-md-3 lteadv" style="display:none;">
-															<div class="formGroup select-icon">
-																<span class="label-title">Ethernet Connection Type</span>
-																<select class="input-all">
-																	<option value="0" selected="">4G</option>
-																	<option value="1">3G</option>
-																	<option value="2">2G</option>
-																</select>
-															</div>
-														</div>
-														<div class="col-md-3 lteadv" style="display:none;">
-															<div class="formGroup">
-																<span class="label-title">MAC Address Clone</span>
-																<input type="text" class="input-all ipv1input" placeholder="String">
-															</div>
-														</div>
-														<div class="col-md-2 lteadv" style="display:none;">
-															<div class="formGroup">
-																<span class="label-title">Enabled</span>
-																<div class="btn-group" data-toggle="buttons">
-																	<label class="btn btn-checkbox" value="1">
-																		<input type="radio">ON
-																	</label>
-																	<label class="btn btn-checkbox active" value="0">
-																		<input type="radio">OFF
-																	</label>
-																</div>
-															</div>
-														</div>
-														<div class="col-md-3 lteadv" style="display:none;">
-															<div class="formGroup formGroup-inline">
-																<span class="label-title">MAC Address</span>
-																<input type="text" class="input-all ipv1input" placeholder="String">
-																<a class="btn btn-default" role="button">Fill my MAC</a>
 															</div>
 														</div>
 													</div>

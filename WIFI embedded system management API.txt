@@ -1660,6 +1660,22 @@ string concentratorname
 string mac
 string defaultmac /* system default mac */
 int dhcpupdatefreq
+bool supportlte
+int wanconnectiontype
+int ltemode
+string ltesimstatus
+int lterssi
+string ltenetwork
+string lteapn
+string ltedialnumber
+string lteusername
+string ltepassword
+bool lteroaming
+string ltepreferredsystem
+int lteiptype
+bool lteautostart
+string ltefallbacktoetherwan
+string lteconnectionstatus
 }
 
 
