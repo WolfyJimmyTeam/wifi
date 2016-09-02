@@ -1326,7 +1326,7 @@ $(document).ready(function() {
 		event.preventDefault();
 		$.ajax({
 			type: 'GET',
-			url: 'https://download.thinkbroadband.com/20MB.zip',
+			url: 'http://download.thinkbroadband.com/20MB.zip',
 			xhrFields: {
 				onprogress: function(event) {
 					//Download progress
