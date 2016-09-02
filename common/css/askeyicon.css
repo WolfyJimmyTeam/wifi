@@ -42,11 +42,11 @@
 .askeyicon-clients-status_B:before {
   content: "\e907";
 }
+.askeyicon-clients_tab:before {
+  content: "\e908";
+}
 .askeyicon-clients_tab_A:before {
   content: "\e909";
-}
-.askeyicon-clients_tab_B:before {
-  content: "\e908";
 }
 .askeyicon-config_printer_A:before {
   content: "\e90a";
@@ -72,94 +72,148 @@
 .askeyicon-file-system-check_B:before {
   content: "\e911";
 }
-.askeyicon-format_A:before {
+.askeyicon-firewall_A:before {
   content: "\e912";
 }
-.askeyicon-format_B:before {
+.askeyicon-firewall_B:before {
   content: "\e913";
 }
-.askeyicon-general_A:before {
+.askeyicon-format_A:before {
   content: "\e914";
 }
-.askeyicon-general_B:before {
+.askeyicon-format_B:before {
   content: "\e915";
 }
-.askeyicon-jobs_printer-jobs_A:before {
+.askeyicon-general_A:before {
   content: "\e916";
 }
-.askeyicon-jobs_printer-lobs_B:before {
+.askeyicon-general_B:before {
   content: "\e917";
 }
-.askeyicon-language_A:before {
+.askeyicon-IPV6_A:before {
   content: "\e918";
 }
-.askeyicon-language_B:before {
+.askeyicon-IPV6_B:before {
   content: "\e919";
 }
-.askeyicon-notification_A:before {
+.askeyicon-jobs_printer-jobs_A:before {
   content: "\e91a";
 }
-.askeyicon-notification_B:before {
+.askeyicon-jobs_printer-lobs_B:before {
   content: "\e91b";
 }
-.askeyicon-parental-control_A:before {
+.askeyicon-lan_A:before {
   content: "\e91c";
 }
-.askeyicon-parental-control_B:before {
+.askeyicon-lan_B:before {
   content: "\e91d";
 }
-.askeyicon-realtime_red_A:before {
+.askeyicon-language_A:before {
   content: "\e91e";
 }
-.askeyicon-realtime_red_B:before {
+.askeyicon-language_B:before {
   content: "\e91f";
 }
-.askeyicon-router_tab_A:before {
+.askeyicon-multicast_A:before {
   content: "\e920";
 }
-.askeyicon-router_tab_B:before {
+.askeyicon-multicast_B:before {
   content: "\e921";
 }
-.askeyicon-smart_A:before {
+.askeyicon-notification_A:before {
   content: "\e922";
 }
-.askeyicon-smart_B:before {
+.askeyicon-notification_B:before {
   content: "\e923";
 }
-.askeyicon-safe-remove_A:before {
+.askeyicon-parental-control_A:before {
   content: "\e924";
 }
-.askeyicon-safe-remove_B:before {
+.askeyicon-parental-control_B:before {
   content: "\e925";
 }
-.askeyicon-share_A:before {
+.askeyicon-qos_A:before {
   content: "\e926";
 }
-.askeyicon-share_B:before {
+.askeyicon-qos_B:before {
   content: "\e927";
 }
-.askeyicon-storage_A:before {
+.askeyicon-realtime_red_A:before {
   content: "\e928";
 }
-.askeyicon-storage_B:before {
+.askeyicon-realtime_red_B:before {
   content: "\e929";
 }
-.askeyicon-system_red_A:before {
+.askeyicon-router_tab_A:before {
   content: "\e92a";
 }
-.askeyicon-system_red_B:before {
+.askeyicon-router_tab_B:before {
   content: "\e92b";
 }
-.askeyicon-wan_A:before {
+.askeyicon-s.m.a.r.t_A:before {
   content: "\e92c";
 }
-.askeyicon-wan_B:before {
+.askeyicon-s.m.a.r.t_B:before {
   content: "\e92d";
 }
-.askeyicon-WAN_tab_A:before {
+.askeyicon-safe-remove_A:before {
   content: "\e92e";
 }
-.askeyicon-WAN_tab_B:before {
+.askeyicon-safe-remove_B:before {
   content: "\e92f";
+}
+.askeyicon-share_A:before {
+  content: "\e930";
+}
+.askeyicon-share_B:before {
+  content: "\e931";
+}
+.askeyicon-storage_A:before {
+  content: "\e932";
+}
+.askeyicon-storage_B:before {
+  content: "\e933";
+}
+.askeyicon-syatem_B:before {
+  content: "\e934";
+}
+.askeyicon-system_A:before {
+  content: "\e935";
+}
+.askeyicon-system_red_A:before {
+  content: "\e936";
+}
+.askeyicon-system_red_B:before {
+  content: "\e937";
+}
+.askeyicon-vpn_A:before {
+  content: "\e938";
+}
+.askeyicon-vpn_B:before {
+  content: "\e939";
+}
+.askeyicon-wake-on-lan_A:before {
+  content: "\e93a";
+}
+.askeyicon-wake-on-lan_B:before {
+  content: "\e93b";
+}
+.askeyicon-wan_A:before {
+  content: "\e93c";
+}
+.askeyicon-wan_B:before {
+  content: "\e93d";
+}
+.askeyicon-WAN_tab_A:before {
+  content: "\e93e";
+}
+.askeyicon-WAN_tab_B:before {
+  content: "\e93f";
+}
+.askeyicon-wireless_A:before {
+  content: "\e940";
+}
+.askeyicon-wireless_B:before {
+  content: "\e941";
 }
 

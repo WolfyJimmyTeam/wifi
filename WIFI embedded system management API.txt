@@ -1,4 +1,14 @@
-WIFI embedded system management API 0.9
+WIFI embedded system management API 0.911
+
+history (2016/09/01)
+1.getwirelessset and wirelessset bandwidth1 field add
+2.getwirelesswpsset type and statusonly add
+3.getvpnclientset,getopenvpnserverset,pptpserverset add statusonly
+
+WIFI embedded system management API 0.912
+
+history (2016/09/02)
+1.systeminfo newfever add
 
 URL /cgi-bin/index.cgi
 
@@ -243,6 +253,7 @@ object data
 {
 integer time: 7867612312
 string fever: “1.0.0 (2016-06-05 05:11 +0800)”
+string newfever: “1.0.1 (2016-07-05 05:11 +0800)”
 string hwver::”V1.0REV1”
 integer uptime:776273
 string 24gssid:”wolfy-2g”
@@ -270,9 +281,7 @@ object data
 {
 object message [
 {
-string id
 string messagecontent
-bool isread /* yes/no */
 string time
 }
 ]
@@ -286,7 +295,7 @@ method:post
 {
 string method
 string sessionid
-string id
+bool isread
 }
 
 Result:
@@ -399,6 +408,7 @@ object data
 			string type:"2.4G/5G/LAN....."
 			bool wanaccess
 			bool storageaccess
+			bool parentfilter
 			obj bandwidthlimit /*kbps, unlimited if up and down is zero*/
 			{
 				int up
@@ -886,6 +896,7 @@ method:post
 string method
 string sessionid
 string username
+string password
 string nickname
 string desc
 }
@@ -900,6 +911,8 @@ method:post
 {
 string method
 string sessionid
+string username
+string password
 string nickname
 string desc
 }
@@ -1000,7 +1013,6 @@ object data
 		{
 			string directory
 			string sharename
-			string type
 			string desc
 			array users
 			[
@@ -1030,7 +1042,6 @@ method:post
 			{
 				string directory
 				string sharename
-				string type
 				string desc
 				array users
 				[
@@ -1059,7 +1070,6 @@ method:post
 			{
 				string directory
 				string sharename
-				string type
 				string desc
 				array users
 				[
@@ -1082,7 +1092,6 @@ method:post
 string method
 string sessionid
 string sharename
-string type
 }
 
 Result
@@ -1102,7 +1111,7 @@ object data
 {
 	array alllist [
 		{
-			string name /*(authmoth/24Gwirelessmode/5Gwirelessmode/24Gchannelbandwidth/5Gchannelbandwidth/24Gcontrolchannel/5Gcontrolchannel/wpaencrypt/protectedmanagementframes/24Gtxpoweradj/5Gtxpoweradj/24Gmulticastrate/5Gmulticastrate/24Gmeshchannel/5Gmeshchannel/wantype/dhcpupdatefreq/porttriggerprotocol/portforwardprotocol/timezone/logstatuspagestatustype/pptpvpnserverauth/openvpnserverfirewall/openvpnserverauthmode/openvpnserverextrahmacauth/openvpnserverencryptioncipher/vpnclienttype/vpnclientpptpencryption/netservicefilterprotocol/ipv6filterprotocol/ipv6configtype/multicastipv4multicastroute/multicastipv6multicastroute/tospagessid/80211tospageremarkdesc/iptvpageremarkdesc/remarkingwmmlist/prioritizationapptype)*/
+			string name /*(authmoth/24Gwirelessmode/5Gwirelessmode/24Gchannelbandwidth/5Gchannelbandwidth/5Gchannelbandwidth1/24Gcontrolchannel/5Gcontrolchannel/wpaencrypt/protectedmanagementframes/24Gtxpoweradj/5Gtxpoweradj/24Gmulticastrate/5Gmulticastrate/24Gmeshchannel/5Gmeshchannel/wantype/dhcpupdatefreq/porttriggerprotocol/portforwardprotocol/timezone/logstatuspagestatustype/pptpvpnserverauth/openvpnserverfirewall/openvpnserverauthmode/openvpnserverextrahmacauth/openvpnserverencryptioncipher/vpnclienttype/vpnclientpptpencryption/netservicefilterprotocol/ipv6filterprotocol/ipv6configtype/multicastipv4multicastroute/multicastipv6multicastroute/tospagessid/80211tospageremarkdesc/iptvpageremarkdesc/remarkingwmmlist/prioritizationapptype)*/
 			array selectlist
 			[
 				{
@@ -1138,15 +1147,16 @@ object data
 			bool ssidhide
 			int authmode
 			string wpa-pskkey
-			int wpe-encrypt
-			int wpe-keyindex
-			string wpe-key1
-			string wpe-key2
-			string wpe-key3
-			string wpe-key4
+			int wep-encrypt
+			int wep-keyindex
+			string wep-key1
+			string wep-key2
+			string wep-key3
+			string wep-key4
 			bool bgprotect (2.4G only)
 			int mode
 			int bandwidth
+			int bandwidth1 (5G only)
 			string extendchannel
 			int wpaencrypt
 			int protectedmanageframe
@@ -1171,15 +1181,16 @@ int channel
 bool ssidhide
 int authmode
 string wpa-pskkey
-int wpe-encrypt
-int wpe-keyindex
-string wpe-key1
-string wpe-key2
-string wpe-key3
-string wpe-key4
+int wep-encrypt
+int wep-keyindex
+string wep-key1
+string wep-key2
+string wep-key3
+string wep-key4
 bool bgprotect (2.4G only)
 int mode
 int bandwidth
+int bandwidth1 (5G only)
 string extendchannel
 int wpaencrypt
 int protectedmanageframe
@@ -1237,6 +1248,8 @@ method:post
 {
 string method
 string sessionid
+int type
+bool statusonly
 }
 
 Result
@@ -1247,7 +1260,7 @@ object data
 		{
 			int type (2.4G/5G)
 			bool wpsenable
-			string connectionstatus
+			string connectionstatus  /* when statusonly set, return type and this fields */
 			string configured
 			int wpsmethod
 			string pincode
@@ -1660,9 +1673,17 @@ string concentratorname
 string mac
 string defaultmac /* system default mac */
 int dhcpupdatefreq
-bool supportlte
-int wanconnectiontype
-int ltemode
+bool ispukcodelock
+bool enablepinlock
+bool ltesupport
+arr ltemode
+[
+	{
+		int id
+		string type
+		bool active
+	}
+]
 string ltesimstatus
 int lterssi
 string ltenetwork
@@ -1671,10 +1692,24 @@ string ltedialnumber
 string lteusername
 string ltepassword
 bool lteroaming
-string ltepreferredsystem
+arr ltepreferredsystem
+[
+	{
+		int id
+		string type
+		bool active
+	}
+]
+arr ltepreferredband
+[
+	{
+		int id
+		string type
+		bool active
+	}
+]
 int lteiptype
 bool lteautostart
-string ltefallbacktoetherwan
 string lteconnectionstatus
 }
 
@@ -1705,6 +1740,103 @@ string servicename
 string concentratorname
 string mac
 int dhcpupdatefreq
+bool enablepinlock
+int ltemode
+string lteapn
+string ltedialnumber
+string lteusername
+string ltepassword
+bool lteroaming
+int ltepreferredsystem
+int ltepreferredband
+int lteiptype
+bool lteautostart
+}
+
+Result
+
+
+/********************************************************/
+ltepukcodeunlock
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+
+
+/********************************************************/
+ltepincodeunlock
+
+method:post
+{
+string method
+string sessionid
+bool needpuk
+}
+
+Result
+
+
+/********************************************************/
+setltepincode
+
+method:post
+{
+string method
+string sessionid
+pincode string
+}
+
+Result
+
+
+/********************************************************/
+getltenetwork
+
+method:post
+{
+string method
+string sessionid
+}
+
+Result
+obj data
+{
+	arr networklist
+	[
+		{
+			string name
+			...
+		}
+	]
+}
+
+
+/********************************************************/
+setltenetwork
+
+method:post
+{
+string method
+string sessionid
+obj data
+}
+
+Result
+
+
+/********************************************************/
+setlteconnect
+
+method:post
+{
+string method
+string sessionid
+bool connect
 }
 
 Result
@@ -2329,6 +2461,7 @@ string sender
 string username
 string password
 object notifytype [{
+int id
 string type
 bool onoff
 }]
@@ -2352,7 +2485,7 @@ string sender
 string username
 string password
 object notifytype [{
-string type
+int id
 bool onoff
 }]
 string subject
@@ -2451,6 +2584,7 @@ method:post
 {
 string method
 string sessionid
+bool statusonly
 }
 
 Result
@@ -2475,8 +2609,8 @@ string clientipstart
 string clientipend
 object users {
 [
-string currentstatus
-string username
+string currentstatus /* if statusonly, return this field */
+string username /* if statusonly, return this field */
 string password
 ]
 }
@@ -2526,6 +2660,7 @@ method:post
 {
 string method
 string sessionid
+bool statusonly
 }
 
 Result
@@ -2563,8 +2698,8 @@ string diffiehellman
 string revocationlist
 object users {
 [
-string currentstatus
-string username
+string currentstatus  /* if statusonly, return this field */
+string username /* if statusonly, return this field */
 string password
 ]
 }
@@ -2627,6 +2762,7 @@ method:post
 {
 string method
 string sessionid
+bool statusonly
 }
 
 Result
@@ -2634,12 +2770,12 @@ object data
 {
 object clients {
 [
-string currentstatus  /* Connected/DisConnected/Retrying/.....*/
+string currentstatus  /* Connected/DisConnected/Retrying/.....,if statusonly set return this field*/
 string desc
-int type
-string vpnserver
+int type  /*if statusonly set return this field*/
+string vpnserver /*if statusonly set return this field*/
 bool defaultroute
-string username
+string username /*if statusonly set return this field*/
 string password
 int pptpencrypt
 bool requestca
@@ -2939,7 +3075,7 @@ Result
 object data
 {
 bool enable
-bool blakcorwhite
+bool backorwhite
 object rules {
 [
 string srcip
@@ -2970,7 +3106,7 @@ method:post
 string method
 string sessionid
 bool enable
-bool blakcorwhite
+bool backorwhite
 object rules {
 [
 string srcip

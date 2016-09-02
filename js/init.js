@@ -141,7 +141,6 @@ function wizard() {
 	console.log(postData);
 	startCountDown(allwaittime.init);
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
-	setTimeout(function() { // in real post, you need to remove setTimeout, setTimeout is only for demo
 		var data =
 		{
 			stat: 'success',
@@ -156,19 +155,19 @@ function wizard() {
 			stopCountDown();
 			myalert(data.feed.msg);
 		}
-	}, allwaittime.init*1000);
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
 
-$(document).ready(function() {
-	// 檢查是不是首頁
-	var pathnameArr = location.pathname.split('/'),
-		htmlFile = pathnameArr[pathnameArr.length-1],
-		isIndex = htmlFile == 'index.html' || htmlFile == '';
-	if (isIndex) {
-		isinit();
-	}
+// check init
+var pathnameArr = location.pathname.split('/'),
+	htmlFile = pathnameArr[pathnameArr.length-1],
+	isIndex = htmlFile == 'index.html' || htmlFile == '';
+if (isIndex) {
+	isinit();
+}
 
+$(document).ready(function() {
+	$('#password').focus();
 	$('#connectiontypedesc').text('DHCP allows your PC to obtain an IP address automaticlly. This connection type is often used by cable modem service providers.');
 	$('.dhcpuse').attr('style', 'display:block;');
 	if ($('#selectwandns>[value="0"]').hasClass('active')) {
@@ -248,6 +247,7 @@ $(document).ready(function() {
 	});
 	$(document).on('click', '#samessidandkey', function(e) {
 		if ($('#samessidandkey>[value="1"]').hasClass('active')) {
+			$('#5gkey').val($('#24gkey').val());
 			$('.24Gsame').hide();
 		} else {
 			$('.24Gsame').show();
@@ -255,8 +255,8 @@ $(document).ready(function() {
 	});
 
 	$(document).on('click', '#firststep button', function(e) {
-		if ($('#password').val().length <= 4) {
-			myalert('Password must have more than 4 characters');
+		if ($('#password').val().length <= 3) {
+			myalert('Password must have more than 3 characters');
 			return;
 		}
 		if ($('#password').val() != $('#firststep .verify').val()) {
@@ -267,8 +267,8 @@ $(document).ready(function() {
 		$('.f1-step:eq(0)').removeClass('active').addClass('activated');
 		$('.f1-step:eq(1)').addClass('active');
 		$('.f1-progress-line').attr('style', "width: 49.99333333333334%;");
-		$('.f1-step:eq(0) i').attr('style', 'margin-left:13px;');
-		$('.f1-step:eq(1) i').attr('style', 'margin-left:11px;');
+		// $('.f1-step:eq(0) i').attr('style', 'margin-left:13px;');
+		// $('.f1-step:eq(1) i').attr('style', 'margin-left:11px;');
 		$(this).parents().find('fieldset:eq(1)').attr('style', 'display:block;');
 		detechwan();
 	});
@@ -322,8 +322,8 @@ $(document).ready(function() {
 		$('.f1-step:eq(1)').removeClass('active').addClass('activated');
 		$('.f1-step:eq(2)').addClass('active');
 		$('.f1-progress-line').attr('style', "width: 83.32666666666668%;");
-		$('.f1-step:eq(1) i').attr('style', 'margin-left:11px;');
-		$('.f1-step:eq(2) i').attr('style', 'margin-left:13px;');
+		// $('.f1-step:eq(1) i').attr('style', 'margin-left:11px;');
+		// $('.f1-step:eq(2) i').attr('style', 'margin-left:13px;');
 		$(this).parents().find('fieldset:eq(2)').attr('style', 'display:block;');
 	});
 	$(document).on('click', '#thirdstep button:eq(0)', function(e) {
@@ -331,11 +331,23 @@ $(document).ready(function() {
 		$('.f1-step:eq(1)').removeClass('activated').addClass('active');
 		$('.f1-step:eq(2)').removeClass('active');
 		$('.f1-progress-line').attr('style', "width: 49.99333333333334%;");
-		$('.f1-step:eq(0) i').attr('style', 'margin-left:13px;');
-		$('.f1-step:eq(1) i').attr('style', 'margin-left:11px;');
+		// $('.f1-step:eq(0) i').attr('style', 'margin-left:13px;');
+		// $('.f1-step:eq(1) i').attr('style', 'margin-left:11px;');
 		$(this).parents().find('fieldset:eq(1)').attr('style', 'display:block;');
 	});
 	$(document).on('click', '#thirdstep button:eq(1)', function(e) {
+		if ($('#24gssid').val()=='' || $('#5gssid').val()=='') {
+			myalert('SSID required');
+			return;
+		}
+		if ($('#24gkey').val()=='' || $('#5gkey').val()=='') {
+			myalert('Key required');
+			return;
+		}
+		if ($('#24gkey').val().length<=7 || $('#5gkey').val().length<=7) {
+			myalert('Key must have more than 7 characters');
+			return;
+		}
 		$('.f1-steps').attr('style', 'display:none;');
 		$('.config').attr('style', 'display:none;');
 		$('.summary').attr('style', 'display:block;');
@@ -394,13 +406,24 @@ $(document).ready(function() {
 		thetable.append('<tr><td>LAN IP</td><td>' + $('#lanip').val() + '</td></tr>');
 	});
 	$(document).on('blur', '#firststep .verify', function(e) {
-		if ($('#useadminpassaskey>[value="0"]').hasClass('active')) {
-			$('#24gkey, #5gkey').val($('#firststep .verify').val());
-			$('#24gkey, #5gkey').prop('disabled', true);
+		// if ($('#useadminpassaskey>[value="1"]').hasClass('active')) {
+		// 	$('#24gkey, #5gkey').val($('#firststep .verify').val());
+		// 	$('#24gkey, #5gkey').prop('disabled', true);
+		// }
+		if ($('#password').val().length >= 8) {
+			$('#useadminpassaskey>label[value="1"]').trigger('click');
+			$('#useadminpassaskey').parent().parent().show();
+		} else {
+			$('#useadminpassaskey').parent().parent().hide();
 		}
 	});
-	$(document).on('click', '#useadminpassaskey', function(e) {
-		if ($('#useadminpassaskey>[value="0"]').hasClass('active')) {
+	$(document).on('blur', '#24gkey', function() {
+		if ($('#samessidandkey>label[value="1"]').hasClass('active')) {
+			$('#5gkey').val($(this).val());
+		}
+	});
+	$(document).on('click', '#useadminpassaskey>label', function(e) {
+		if ($(this).attr('value')=='1') {
 			$('#24gkey, #5gkey').val($('#firststep .verify').val());
 			$('#24gkey, #5gkey').prop('disabled', true);
 		} else {

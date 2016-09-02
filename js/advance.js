@@ -1,58 +1,58 @@
 
 function getpptpserverset() {
-	var postData =
-	{
-		method: 'getpptpserverset',
-		sessionid: sessionID
+    var postData =
+    {
+        method: 'getpptpserverset',
+        sessionid: sessionID
 
-	};
+    };
 
-	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
-		var data =
-		{
-			stat: 'success',
-			feed:
-			{
-				msg: 'Success',
-				data:
-				{
-					pptpserverenable: 0,
-					config: 1,
-					broadcast: 0,
-					authmode: 2,
-					mppe128encrypt: 0,
-					mppe40encrypt: 0,
-					noencrypt: 0,
-					autoconnectdns: 0,
-					dns1: '192.168.10.1',
-					dns2: '192.168.10.2',
-					autoconnectwins: 0,
-					wins1: '192.168.10.1',
-					wins2: '192.168.10.2',
-					mru: 1482,
-					mtu: 1482,
-					clientipstart: '192.168.10.10',
-					clientipend: '192.168.10.20',
-					users: [{
-						currentstatus: 'inactive',
-						username: 'wolfy',
-						password:'wolfytest'
-					},
-					{
-						currentstatus: 'inactive',
-						username: 'likky',
-						password:'likkytest'
-					}]
-				}
-			}
-		};
-		if (data.stat == 'success') {
-			updatetrigger=false;
+    // $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+        var data =
+        {
+            stat: 'success',
+            feed:
+            {
+                msg: 'Success',
+                data:
+                {
+                    pptpserverenable: 0,
+                    config: 1,
+                    broadcast: 0,
+                    authmode: 2,
+                    mppe128encrypt: 0,
+                    mppe40encrypt: 0,
+                    noencrypt: 0,
+                    autoconnectdns: 0,
+                    dns1: '192.168.10.1',
+                    dns2: '192.168.10.2',
+                    autoconnectwins: 0,
+                    wins1: '192.168.10.1',
+                    wins2: '192.168.10.2',
+                    mru: 1482,
+                    mtu: 1482,
+                    clientipstart: '192.168.10.10',
+                    clientipend: '192.168.10.20',
+                    users: [{
+                        currentstatus: 'inactive',
+                        username: 'wolfy',
+                        password:'wolfytest'
+                    },
+                    {
+                        currentstatus: 'inactive',
+                        username: 'likky',
+                        password:'likkytest'
+                    }]
+                }
+            }
+        };
+        if (data.stat == 'success') {
+            updatetrigger=false;
 
-			$('#pptpvpnserverenable>label[value="'+data.feed.data.pptpserverenable+'"]');
-			$('#pptpvpnserverconfig>label[value="'+data.feed.data.config+'"]').trigger('click');
-			$('#pptpvpnserverbroadcast>label[value="'+data.feed.data.broadcast+'"]');
-			$('#pptpvpnserverauth').val(data.feed.data.authmode).trigger('change');
+            $('#pptpvpnserverenable>label[value="'+data.feed.data.pptpserverenable+'"]');
+            $('#pptpvpnserverconfig>label[value="'+data.feed.data.config+'"]').trigger('click');
+            $('#pptpvpnserverbroadcast>label[value="'+data.feed.data.broadcast+'"]');
+            $('#pptpvpnserverauth').val(data.feed.data.authmode).trigger('change');
             $('#pptpvpnservermppe128>label[value="'+data.feed.data.mppe128encrypt+'"]');
             $('#pptpvpnservermppe40>label[value="'+data.feed.data.mppe40encrypt+'"]');
             $('#pptpvpnservernoencrypt>label[value="'+data.feed.data.noencrypt+'"]');
@@ -77,13 +77,63 @@ function getpptpserverset() {
             $('#pptpvpnadavncestartip').val(data.feed.data.clientipstart);
             $('#pptpvpnadavnceendip').val(data.feed.data.clientipend);
 
-			setTimeout(function(){
-				updatetrigger=true;
-			},0)
-		} else {
-			myalert(data.feed.msg);
-		}
-	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+            setTimeout(function(){
+                updatetrigger=true;
+            },0)
+        } else {
+            myalert(data.feed.msg);
+        }
+    // }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+
+function getpptpserverset_statusonly() {
+    var postData =
+    {
+        method: 'getpptpserverset',
+        sessionid: sessionID,
+        statusonly:true
+
+    };
+
+    // $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+        var data =
+        {
+            stat: 'success',
+            feed:
+            {
+                msg: 'Success',
+                data:
+                {
+                    users: [{
+                        currentstatus: 'active',
+                        username: 'wolfy',
+                    },
+                    {
+                        currentstatus: 'active',
+                        username: 'likky',
+                    }]
+                }
+            }
+        };
+        if (data.stat == 'success') {
+            updatetrigger=false;
+
+            $.each($('.pptpvpnserverlist tbody').data('data').feed.data.users,function (index,users) {
+                $.each(data.feed.data.users,function (index1,statususers) {
+                    if(users.username == statususers.username) {
+                        $('.pptpvpnserverlist tbody tr:eq('+index+') td:eq(1)').text(statususers.currentstatus);
+                    }
+                });
+            });
+
+
+            setTimeout(function(){
+                updatetrigger=true;
+            },0)
+        } else {
+            myalert(data.feed.msg);
+        }
+    // }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
 
 function pptpserverset(type) {
@@ -358,6 +408,55 @@ function getopenvpnserverset() {
     // }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
 
+function getopenvpnserverset_statusonly() {
+    var postData =
+    {
+        method: 'getopenvpnserverset',
+        sessionid: sessionID,
+        statusonly:true
+
+    };
+
+    // $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+        var data =
+        {
+            stat: 'success',
+            feed:
+            {
+                msg: 'Success',
+                data:
+                {
+                    users: [{
+                        currentstatus: 'active',
+                        username: 'wolfy',
+                    },
+                    {
+                        currentstatus: 'active',
+                        username: 'likky',
+                    }]
+                }
+            }
+        };
+        if (data.stat == 'success') {
+            updatetrigger=false;
+
+            $.each($('.openvpnserverlist tbody').data('data').feed.data.users,function (index,users) {
+                $.each(data.feed.data.users,function (index1,statususers) {
+                    if(users.username == statususers.username) {
+                        $('.openvpnserverlist tbody tr:eq('+index+') td:eq(1)').text(statususers.currentstatus);
+                    }
+                });
+            });
+
+            setTimeout(function(){
+                updatetrigger=true;
+            },0)
+        } else {
+            myalert(data.feed.msg);
+        }
+    // }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+
 function openvpnserverset() {
 
     var postData =
@@ -469,6 +568,7 @@ function getvpnclientset() {
             }
         };
         if (data.stat == 'success') {
+            updatetrigger=false;
             $('.vpnclientlist tbody').empty();
             $('.vpnclientlist tbody').data('data',data);
             $.each(data.feed.data.clients,function (index,clients) {
@@ -489,6 +589,62 @@ function getvpnclientset() {
                         '<td>'+clients.desc+'</td></tr>').find('a').popover();
                 }
             });
+            setTimeout(function(){
+                updatetrigger=true;
+            },0)
+        } else {
+            myalert(data.feed.msg);
+        }
+    // }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+
+function getvpnclientset_statusonly() {
+    var postData =
+    {
+        method: 'getvpnclientset',
+        sessionid: sessionID,
+        statusonly:true
+
+    };
+
+    // $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+        var data =
+        {
+            stat: 'success',
+            feed:
+            {
+                msg: 'Success',
+                data:
+                {
+                    clients:
+                    [{
+                        currentstatus: 'Connected',
+                        type:0,
+                        vpnserver:'192.168.1.1',
+                        username:'wolfy',
+                    },
+                    {
+                        currentstatus: 'Connected',
+                        type:2,
+                        vpnserver:'192.168.1.2',
+                        username:'wolfy',
+                    }
+                    ]
+                }
+            }
+        };
+        if (data.stat == 'success') {
+            updatetrigger=false;
+            $.each($('.vpnclientlist tbody').data('data').feed.data.clients,function (index,clients) {
+                $.each(data.feed.data.clients,function (index1,statusclients) {
+                    if(clients.type == statusclients.type && clients.vpnserver == statusclients.vpnserver && clients.username == statusclients.username) {
+                        $('.vpnclientlist tbody tr:eq('+index+') td:eq(1)').text(statusclients.currentstatus);
+                    }
+                });
+            });
+            setTimeout(function(){
+                updatetrigger=true;
+            },0)
         } else {
             myalert(data.feed.msg);
         }
@@ -1065,7 +1221,7 @@ function getfirewallnetserviceset() {
                 data:
                 {
                     enable: 0,
-                    blakcorwhite:0,
+                    backorwhite:0,
                     rules: [{
                         srcip:'192.168.1.1',
                         srcportrange:'20:21',
@@ -1089,7 +1245,7 @@ function getfirewallnetserviceset() {
 			updatetrigger=false;
 
             $('#netservicefilterenable>label[value="'+data.feed.data.enable+'"]').trigger('click');
-            $('#netservicefiltermethod>label[value="'+data.feed.data.blakcorwhite+'"]').trigger('click');
+            $('#netservicefiltermethod>label[value="'+data.feed.data.backorwhite+'"]').trigger('click');
             $('.netservicefilterlist tbody').empty();
             $.each(data.feed.data.rules,function (index,rules) {
                 $('.netservicefilterlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
@@ -1118,7 +1274,7 @@ function firewallnetserviceset() {
         method: 'firewallnetserviceset',
         sessionid: sessionID,
         enable: Number($('#netservicefilterenable>label.active').attr('value')),
-        blakcorwhite:Number($('#netservicefiltermethod>label.active').attr('value')),
+        backorwhite:Number($('#netservicefiltermethod>label.active').attr('value')),
         rules:rules,
         schedule:$('#netservicefilterschedule').getdata()
     };
@@ -2165,6 +2321,10 @@ function wakeonlannow() {
     // }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
 
+var vpnclientrefreshinterval = null;
+var openvpnserverrefreshinterval = null;
+var pptpserverrefreshinterval = null;
+
 $(document).ready(function() {
 
     $(document).on('click','#pptpvpnserverconfig label',function (e) {
@@ -2349,6 +2509,7 @@ $(document).ready(function() {
                 $('#ipv6lanprefixlength').parent().html('<span class="label-title">LAN Prefix Length</span><input id="ipv6lanprefixlength" type="text" class="input-all" placeholder="Integer" value="">');
    				break;
    			case '4':
+   				$('#ipv6dhcpoption>label[value=0]').trigger('click');
    				$('.tunnel6rd').attr('style','display:block;');
 				$('.ipv6dns').attr('style','display:block;');
                 $('#ipv6lanaddress').parent().html('<span class="label-title">LAN Address</span><span id="ipv6lanaddress" class="display-all"></span>');
@@ -2367,6 +2528,14 @@ $(document).ready(function() {
    				break;
    		}
    });
+	$('#ipv6dhcpoption>label').click(function() {
+		if ($(this).attr('value')=='0') {
+			$('.dhcpoption').attr('style','display:block;');
+		}
+		if ($(this).attr('value')=='1') {
+			$('.dhcpoption').attr('style','display:none;');
+		}
+	});
    $(document).on('click','#ipv6simulatneous label',function (e) {
 		if($(this).attr('value')=='0') {
 			$('#ipv6simulatneoustype').parent('div').parent('div').attr('style','display:none;');
@@ -2401,6 +2570,9 @@ $(document).ready(function() {
     	$('#pptpvpnserverpage').siblings('div.genconfig').attr('style','display:none;');
     	$('#pptpvpnserverpage').attr('style','display:block;');
     	getpptpserverset();
+        pptpserverrefreshinterval = setInterval(function getpptpvpnserverstatus() {
+            getpptpserverset_statusonly();
+        }, 3000);
 	});
 
 	$("a[href='#firewallconfigpage']").on('shown.bs.tab', function(e) {
@@ -3029,6 +3201,12 @@ $(document).ready(function() {
     	$('#pptpvpnserverpage').attr('style','display:block;');
        	$('#vpnnavbar.navbar-toggle:visible').click();
         getpptpserverset();
+        pptpserverrefreshinterval = setInterval(function getpptpvpnserverstatus() {
+            getpptpserverset_statusonly();
+        }, 3000);
+    });
+    $('#pptpvpnserverpage').on('hide', function(){
+        clearInterval(pptpserverrefreshinterval);
     });
 
 
@@ -3042,6 +3220,12 @@ $(document).ready(function() {
     	$('#openvpnserverpage').attr('style','display:block;');
        	$('#vpnnavbar.navbar-toggle:visible').click();
         getopenvpnserverset();
+        openvpnserverrefreshinterval = setInterval(function getopenvpnserverstatus() {
+            getopenvpnserverset_statusonly();
+        }, 3000);
+    });
+    $('#openvpnserverpage').on('hide', function(){
+        clearInterval(openvpnserverrefreshinterval);
     });
 
     $(document).on('click','#openvpnserverconfig label',function (e) {
@@ -3219,6 +3403,12 @@ $(document).ready(function() {
     	$('#vpnclientpage').attr('style','display:block;');
        	$('#vpnnavbar.navbar-toggle:visible').click();
         getvpnclientset();
+        vpnclientrefreshinterval = setInterval(function getvpnclientstatus() {
+            getvpnclientset_statusonly();
+        }, 3000);
+    });
+    $('#vpnclientpage').on('hide', function(){
+        clearInterval(vpnclientrefreshinterval);
     });
 
     $(document).on('click','#addvpnclient',function (e) {

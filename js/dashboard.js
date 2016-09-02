@@ -67,6 +67,7 @@ function setlanguages() {
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
+var uptimeVal = 0;
 function systeminfo() {
 	var postData =
 	{
@@ -85,8 +86,9 @@ function systeminfo() {
 				{
 					time: 7867612312,
 					fever: '1.0.0 (2016-06-05 05:11 +0800)',
+					newfever: '1.0.1 (2016-06-06 05:11 +0800)',
 					hwver: 'V1.0REV1',
-					uptime: 776273,
+					uptime: 77627300000,
 					'24gssid': 'wolfy-2g',
 					'24gkey': '1234',
 					authmethod: 'WPA2 Personal',
@@ -100,6 +102,7 @@ function systeminfo() {
 		};
 		if (data.stat == 'success') {
 			var data = data.feed.data;
+			uptimeVal = data.uptime;
 			$('.sysinfo').empty();
 			$('.sysinfo').append(
 				'<tr>'+
@@ -108,7 +111,7 @@ function systeminfo() {
 				'</tr>'+
 				'<tr>'+
 					'<td>Firmware Version</td>'+
-					'<td>'+data.fever+'</td>'+
+					'<td>'+data.fever+((data.newfever>data.fever)?' <button type="button" class="btn btn-default updatefever"><span class="glyphicon glyphicon-download-alt"></span> Update</button>':'')+'</td>'+
 				'</tr>'+
 				'<tr>'+
 					'<td>Hardware Version</td>'+
@@ -116,7 +119,7 @@ function systeminfo() {
 				'</tr>'+
 				'<tr>'+
 					'<td>System UPTime</td>'+
-					'<td id="uptimestr"	 >'+moment(data.uptime).utc().format()+'</td>'+
+					'<td id="uptimestr"	 >'+moment(uptimeVal).date()+' day '+moment(uptimeVal).hour()+' hour '+moment(uptimeVal).minute()+' min '+moment(uptimeVal).second()+' sec'+'</td>'+
 				'</tr>'+
 				'<tr>'+
 					'<td>'+
@@ -170,21 +173,15 @@ function eventmsg() {
 					message:
 					[
 						{
-							id: '0',
 							messagecontent: 'WAN disconnected!!!',
-							isread: 0,
 							time: '2017/08/24 10:30:35'
 						},
 						{
-							id: '1',
 							messagecontent: 'WAN disconnected!!',
-							isread: 0,
 							time: '2017/08/24 10:30:35'
 						},
 						{
-							id: '2',
 							messagecontent: 'WAN disconnected!',
-							isread: 0,
 							time: '2017/08/24 10:30:35'
 						}
 					]
@@ -192,18 +189,22 @@ function eventmsg() {
 			}
 		};
 		if (data.stat == 'success') {
-			$('#eventmsg .count').html(data.feed.data.message.length);
-			$('#eventmsg>.dropdown-menu').empty();
-			$.each(data.feed.data.message, function(index, val) {
-				$('#eventmsg>.dropdown-menu').append(
-					'<li msgid="'+val.id+'" isread="'+val.isread+'">'+
-						'<a>'+
-							'<i class="fa fa-comment fa-fw"></i> '+val.messagecontent+
-							'<small class="pull-right text-muted">'+val.time+'</small>'+
-						'</a>'+
-					'</li>'
-				);
-			});
+			if (data.feed.data.message.length<1) {
+				$('#eventmsg').hide();
+			} else {
+				$('#eventmsg .count').html(data.feed.data.message.length);
+				$('#eventmsg>.dropdown-menu').empty();
+				$.each(data.feed.data.message, function(index, val) {
+					$('#eventmsg>.dropdown-menu').append(
+						'<li>'+
+							'<a>'+
+								'<i class="fa fa-comment fa-fw"></i> '+val.messagecontent+
+								'<small class="pull-right text-muted">'+val.time+'</small>'+
+							'</a>'+
+						'</li>'
+					);
+				});
+			}
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
@@ -211,7 +212,8 @@ function seteventread() {
 	var postData =
 	{
 		method: 'seteventread',
-		sessionid: sessionID
+		sessionid: sessionID,
+		isread: 1
 	};
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
 		var data =
@@ -351,6 +353,76 @@ function wanspeedtest() {
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
+// function wirelessstatuslist(d) {
+// 	$('#mobiledevicepage-1 .clientlist').append(
+// 		'<tr>' +
+// 			'<td>'+
+// 				'<div class="btn-group">'+
+// 					'<button type="button" class="btn btn-default btn-sm wanaccess" value="'+((d.wanaccess) ? true : false)+'">WAN('+((d.wanaccess) ? 'Permit' : 'Deny')+')</button>' +
+// 					'<button type="button" class="btn btn-default btn-sm parentfilter">Parental Control</button>'+
+// 					'<button type="button" class="btn btn-default btn-sm storageaccess" value="'+((d.storageaccess) ? true : false)+'">StorageShare('+((d.storageaccess) ? 'ON' : 'OFF')+')</button>'+
+// 					'<button type="button" class="btn btn-default btn-sm bandwidthlimit" value="'+((d.bandwidthlimit.up==0 && d.bandwidthlimit.down==0) ? false : true)+'">BandwidthLimit</button>'+
+// 				'</div>'+
+// 			'</td>'+
+// 			'<td><i class="fa fa-apple"></i> ' + d.device + ' (' + d.type + ')</td>' +
+// 			'<td>'+d.time+'</td>' +
+// 			'<td>' + d.ip + '</td>' +
+// 			'<td>' + d.mac.toUpperCase() + '</td>' +
+// 		'</tr>'
+// 	).children('tr:last-child').data('data', d);
+// }
+function wirelessstatuslist(d) {
+	$('#mobiledevicepage-1 .clientlist').append(
+		'<tr>' +
+			'<td>'+
+				'<div class="btn-group wanaccess" data-toggle="buttons">'+
+					'<label class="btn btn-sm btn-checkbox'+((d.wanaccess)?' active':'')+'" value="1">'+
+						'<input type="radio">Permit'+
+					'</label>'+
+					'<label class="btn btn-sm btn-checkbox'+((!d.wanaccess)?' active':'')+'" value="0">'+
+						'<input type="radio">Deny'+
+					'</label>'+
+				'</div>'+
+			'</td>'+
+			'<td>'+
+				'<div class="btn-group parentfilter" data-toggle="buttons">'+
+					'<label class="btn btn-sm btn-checkbox'+((d.parentfilter)?' active':'')+'" value="1">'+
+						'<input type="radio">ON'+
+					'</label>'+
+					'<label class="btn btn-sm btn-checkbox'+((!d.parentfilter)?' active':'')+'" value="0">'+
+						'<input type="radio">OFF'+
+					'</label>'+
+				'</div>'+
+				'<i class="glyphicon glyphicon-pencil btn-icon i-parentfilter'+((d.parentfilter)?'':' hide')+'"></i>'+
+			'</td>'+
+			'<td>'+
+				'<div class="btn-group storageaccess" data-toggle="buttons">'+
+					'<label class="btn btn-sm btn-checkbox'+((d.storageaccess)?' active':'')+'" value="1">'+
+						'<input type="radio">ON'+
+					'</label>'+
+					'<label class="btn btn-sm btn-checkbox'+((!d.storageaccess)?' active':'')+'" value="0">'+
+						'<input type="radio">OFF'+
+					'</label>'+
+				'</div>'+
+			'</td>'+
+			'<td>'+
+				'<div class="btn-group bandwidthlimit" data-toggle="buttons">'+
+					'<label class="btn btn-sm btn-checkbox'+((d.bandwidthlimit.up && d.bandwidthlimit.down)?' active':'')+'" value="1">'+
+						'<input type="radio">ON'+
+					'</label>'+
+					'<label class="btn btn-sm btn-checkbox'+((!d.bandwidthlimit.up && !d.bandwidthlimit.down)?' active':'')+'" value="0">'+
+						'<input type="radio">OFF'+
+					'</label>'+
+				'</div>'+
+				'<i class="glyphicon glyphicon-pencil btn-icon i-bandwidthlimit'+((d.bandwidthlimit.up && d.bandwidthlimit.down)?'':' hide')+'"></i>'+
+			'</td>'+
+			'<td class="device"><i class="fa fa-apple"></i> ' + d.device + ' (' + d.type + ')</td>' +
+			'<td>'+d.time+'</td>' +
+			'<td>' + d.ip + '</td>' +
+			'<td>' + d.mac.toUpperCase() + '</td>' +
+		'</tr>'
+	).children('tr:last-child').data('data', d);
+}
 function wirelessstatus() {
 	var postData =
 	{
@@ -375,8 +447,9 @@ function wirelessstatus() {
 							ip: '192.168.1.1',
 							mac: '12:23:34:45:67:00',
 							type: '5G',
-							wanaccess: true,
-							storageaccess: true,
+							wanaccess: 1,
+							storageaccess: 1,
+							parentfilter: 0,
 							bandwidthlimit:
 							{
 								up: 5234,
@@ -384,13 +457,14 @@ function wirelessstatus() {
 							}
 						},
 						{
-							device: 'wolfy-air',
+							device: 'jimmy-air',
 							time: 'offline',  /* online will display time, offline just give "offline" string */
 							ip: '192.168.1.2',
 							mac: '12:23:34:45:67:01',
 							type: '5G',
-							wanaccess: true,
-							storageaccess: true,
+							wanaccess: 1,
+							storageaccess: 1,
+							parentfilter: 0,
 							bandwidthlimit:
 							{
 								up: 234,
@@ -398,13 +472,59 @@ function wirelessstatus() {
 							}
 						},
 						{
-							device: 'wolfy-air',
+							device: 'apple-air',
 							time: 'offline',  /* online will display time, offline just give "offline" string */
 							ip: '192.168.1.2',
 							mac: '12:23:34:45:67:02',
 							type: '5G',
-							wanaccess: true,
-							storageaccess: true,
+							wanaccess: 0,
+							storageaccess: 1,
+							parentfilter: 0,
+							bandwidthlimit:
+							{
+								up: 0,
+								down: 0
+							}
+						},
+						{
+							device: 'client-air',
+							time: 'offline',  /* online will display time, offline just give "offline" string */
+							ip: '192.168.1.2',
+							mac: '12:23:34:45:67:03',
+							type: '5G',
+							wanaccess: 1,
+							storageaccess: 1,
+							parentfilter: 0,
+							bandwidthlimit:
+							{
+								up: 0,
+								down: 0
+							}
+						},
+						{
+							device: 'cool-air',
+							time: 'offline',  /* online will display time, offline just give "offline" string */
+							ip: '192.168.1.2',
+							mac: '12:23:34:45:67:04',
+							type: '5G',
+							wanaccess: 1,
+							storageaccess: 1,
+							parentfilter: 1,
+							bandwidthlimit:
+							{
+								up: 0,
+								down: 0
+							}
+						},
+						{
+							device: 'awesome-air',
+							time: 'offline',  /* online will display time, offline just give "offline" string */
+							ip: '192.168.1.2',
+							mac: '12:23:34:45:67:05',
+							type: '5G',
+							wanaccess: 1,
+							storageaccess: 1,
+							parentfilter: 0,
 							bandwidthlimit:
 							{
 								up: 0,
@@ -416,43 +536,23 @@ function wirelessstatus() {
 			}
 		};
 		if (data.stat=='success') {
-			$('#mobiledevicepage-1 .clientlist').empty();
-			var limit = {};
+			$('#mobiledevicepage-1 .clientlist').data('data', data.feed.data.status).empty();
 			$.each(data.feed.data.status, function(index, d) {
-				limit = true;
-				if (d.bandwidthlimit.up==0 && d.bandwidthlimit.down==0) {
-					limit = false;
-				}
-				$('#mobiledevicepage-1 .clientlist').append(
-					'<tr>' +
-						'<td>'+
-							'<div class="btn-group">'+
-								'<button type="button" class="btn btn-default btn-sm wanaccess" value="'+((d.wanaccess) ? true : false)+'">WAN('+((d.wanaccess) ? 'Permit' : 'Deny')+')</button>' +
-								'<button type="button" class="btn btn-default btn-sm parentfilter">Parental Control</button>'+
-								'<button type="button" class="btn btn-default btn-sm permitshare" value="'+((d.storageaccess) ? true : false)+'">StorageShare('+((d.storageaccess) ? 'ON' : 'OFF')+')</button>'+
-								'<button type="button" class="btn btn-default btn-sm bandwidthlimit" value="'+((limit) ? true : false)+'">BandwidthLimit</button>'+
-							'</div>'+
-						'</td>'+
-						'<td><i class="fa fa-apple"></i> ' + d.device + ' (' + d.type + ')</td>' +
-						'<td>'+d.time+'</td>' +
-						'<td>' + d.ip + '</td>' +
-						'<td>' + d.mac.toUpperCase() + '</td>' +
-					'</tr>'
-				).children('tr:last-child').data('data', d);
+				wirelessstatuslist(d);
 			});
 		} else {
 			myalert(data.feed.msg);
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
-function setclientaccess(tr) {
-	var trData = tr.data('data');
+function setclientaccess(label) {
+	var trData = label.parents('tr').data('data');
 	var postData =
 	{
 		method: 'setclientaccess',
 		sessionid: sessionID,
 		mac: trData.mac,
-		set: (tr.find('.wanaccess').attr('value')=='true')?true:false
+		set: parseInt(label.attr('value'))
 	};
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
 		var data =
@@ -464,22 +564,25 @@ function setclientaccess(tr) {
 			}
 		};
 		if (data.stat=='success') {
-			tr.find('.wanaccess')
-				.attr('value', (postData.set)?'false':'true')
-				.html('WAN('+((postData.set)?'Deny':'Permit')+')');
+			$.each($('#mobiledevicepage-1 .clientlist').data('data'), function(index, val) {
+				if (val.mac==trData.mac) {
+					val.wanaccess = postData.set;
+					return false;
+				}
+			});
 		} else {
 			myalert(data.feed.msg);
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
-function setstorageaccess(tr) {
-	var trData = tr.data('data');
+function setstorageaccess(label) {
+	var trData = label.parents('tr').data('data');
 	var postData =
 	{
 		method: 'setstorageaccess',
 		sessionid: sessionID,
 		mac: trData.mac,
-		set: (tr.find('.permitshare').attr('value')=='true')?true:false
+		set: parseInt(label.attr('value'))
 	};
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
 		var data =
@@ -491,9 +594,12 @@ function setstorageaccess(tr) {
 			}
 		};
 		if (data.stat=='success') {
-			tr.find('.permitshare')
-				.attr('value', (postData.set)?'false':'true')
-				.html('StorageShare('+((postData.set)?'OFF':'ON')+')');
+			$.each($('#mobiledevicepage-1 .clientlist').data('data'), function(index, val) {
+				if (val.mac==trData.mac) {
+					val.storageaccess = postData.set;
+					return false;
+				}
+			});
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -531,10 +637,20 @@ function setbandwidthlimit(trData) {
 					$(el).data('data').bandwidthlimit.up = postData.upload;
 					$(el).data('data').bandwidthlimit.down = postData.download;
 					if (postData.upload==0 && postData.download==0) {
-						$(el).find('.bandwidthlimit').attr('value', false);
+						$(el).find('.bandwidthlimit>label[value="0"]').addClass('active').siblings().removeClass('active');
+						$(el).find('.i-bandwidthlimit').addClass('hide');
+						$('#bandwidthlimit').data('isSet', 0);
 					} else {
-						$(el).find('.bandwidthlimit').attr('value', true);
+						$(el).find('.i-bandwidthlimit').removeClass('hide');
+						$('#bandwidthlimit').data('isSet', 1);
 					}
+				}
+			});
+			$.each($('#mobiledevicepage-1 .clientlist').data('data'), function(index, val) {
+				if (val.mac==trData.mac) {
+					val.bandwidthlimit.up = postData.upload;
+					val.bandwidthlimit.down = postData.download;
+					return false;
 				}
 			});
 			$('#bandwidthlimit').modal('hide');
@@ -543,12 +659,12 @@ function setbandwidthlimit(trData) {
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
-function getparentalcontrl(tr) {
+function getparentalcontrl(btn) {
 	var postData =
 	{
 		method: 'getparentalcontrl',
 		sessionid: sessionID,
-		mac: tr.data('data').mac
+		mac: btn.parents('tr').data('data').mac
 	};
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
 		var data =
@@ -574,20 +690,40 @@ function getparentalcontrl(tr) {
 		};
 		if (data.stat=='success') {
 			$('#parentalview .day-schedule').setdata(data.feed.data.schedule);
-			$('#parentalview').modal('show');
+			$('#parentalview').data('isSet', btn.parents('tr').data('data').parentfilter).modal('show');
 		} else {
 			myalert(data.feed.msg);
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
-function setparentalcontrl(modalData) {
+function setparentalcontrl(btn) {
+	var objData = {};
+	if (btn.is('label')) {
+		objData = btn.parents('tr').data('data');
+	} else {
+		objData = btn.parents('.modal').data('data');
+	}
 	var postData =
 	{
 		method: 'setparentalcontrl',
 		sessionid: sessionID,
-		mac: modalData.mac,
-		data: $('#parentalview .day-schedule').getdata()
+		mac: objData.mac,
+		data: {}
 	};
+	if (btn.attr('value')=='0') {
+		postData.data =
+		{
+			sun: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+			mon: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+			tus: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+			wen: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+			thr: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+			fri: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0',
+			sat: '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0'
+		}
+	} else {
+		postData.data = $('#parentalview .day-schedule').getdata();
+	}
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
 		var data =
 		{
@@ -598,7 +734,32 @@ function setparentalcontrl(modalData) {
 			}
 		};
 		if (data.stat=='success') {
-			$('#parentalview').modal('hide');
+			if (btn.is('label') && btn.attr('value')=='0') {
+				$('#parentalview').data('isSet', 0);
+				$('#mobiledevicepage-1 .clientlist>tr').each(function(index, el) {
+					if ($(el).data('data').mac==objData.mac) {
+						$(el).data('data').parentfilter = 0;
+						return false;
+					}
+				});
+				btn.parents('tr').find('.i-parentfilter').addClass('hide');
+			} else {
+				$('#parentalview').data('isSet', 1);
+				$('#mobiledevicepage-1 .clientlist>tr').each(function(index, el) {
+					if ($(el).data('data').mac==objData.mac) {
+						$(el).data('data').parentfilter = 1;
+						$(el).find('.i-parentfilter').removeClass('hide');
+						return false;
+					}
+				});
+				$('#parentalview').modal('hide');
+			}
+			$.each($('#mobiledevicepage-1 .clientlist').data('data'), function(index, val) {
+				if (val.mac==trData.mac) {
+					val.parentfilter = (btn.is('label') && btn.attr('value')=='0')?0:1;
+					return false;
+				}
+			});
 		} else {
 			myalert(data.feed.msg);
 		}
@@ -613,9 +774,10 @@ function statistic(type) {
 		method: 'statistic',
 		sessionid: sessionID,
 		type1: type, //cpu/lan/wan/wiress24G/wireless5G
-		type2: ''
+		type2: 'cpu'
 	};
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+
 		var data =
 		{
 			stat: 'success',
@@ -624,81 +786,77 @@ function statistic(type) {
 				msg: 'Success',
 				data:
 				{
-					cpu: getRandomDatacpu(),
-					lan: getRandomDatabandwidth(),
-					wan: getRandomDatabandwidth(),
-					wireless24g: getRandomDatabandwidth(),
-					wireless5g: getRandomDatabandwidth()
+					cpu: getcpurandom()
 				}
 			}
 		};
+		var differup,differdown;
+		if(prevbandwidth[0]==0)
+			differup = 0;
+		else
+			differup =  data.feed.data[type+'up'] - prevbandwidth[0];
+
+		prevbandwidth[0] = data.feed.data[type+'up'];
+		if(prevbandwidth[0]==0)
+			differdown = 0;
+		else
+			differdown =  data.feed.data[type+'down'] - prevbandwidth[1];
+
+		/* for demo only */
+		differup =	Number(getbandwidthrandom(0));
+		differdown = Number(getbandwidthrandom(1));
+
+
+
 		if (data.stat == 'success') {
-			switch (type) {
-				case 'cpu':
-					init_cpuloadchart(data.feed.data[type]);
-					break;
-				default:
-					init_nettrafficchart(data.feed.data[type]);
-					break;
+			if (randomdatabandwidth[0].length==60) {
+				randomdatabandwidth[0] = randomdatabandwidth[0].slice(1);
 			}
+			randomdatabandwidth[0].push(differup);
+			if (randomdatabandwidth[1].length==60) {
+				randomdatabandwidth[1] = randomdatabandwidth[1].slice(1);
+			}
+			randomdatabandwidth[1].push(differdown);
+
+			var res = [];
+			for ( var i = 0; i< randomdatabandwidth[0].length; i++) {
+				res.push([i, randomdatabandwidth[0][i]]);
+			}
+			var netret = [];
+			netret.push(res);
+			res = [];
+			for ( var i = 0; i< randomdatabandwidth[1].length; i++) {
+				res.push([i, randomdatabandwidth[1][i]]);
+			}
+			netret.push(res);
+
+			// zip the generated y values with the x values
+
+			if (randomdatacpu.length==60) {
+				randomdatacpu = randomdatacpu.slice(1);
+			}
+			randomdatacpu.push(data.feed.data.cpu);
+			var cpuret = [];
+			for ( var i = 0; i< randomdatacpu.length; i++) {
+				cpuret.push([i, randomdatacpu[i]]);
+			}
+
+			init_cpuloadchart(cpuret);
+			init_nettrafficchart(netret);
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
-function getRandomDatacpu() {
-	var container = $('#cpuload');
-	var maximum = container.outerWidth() / 4 || 300;
 
-	if (randomdatacpu.length) {
-		randomdatacpu = randomdatacpu.slice(1);
-	}
-
-	while (randomdatacpu.length < maximum) {
-		var previous = randomdatacpu.length ? randomdatacpu[randomdatacpu.length - 1] : 50;
-		var y = previous + Math.random() * 10 - 5;
-		randomdatacpu.push(y < 0 ? 0 : y > 100 ? 100 : y);
-	}
-
-	// zip the generated y values with the x values
-
-	var res = [];
-	for (var i = 0; i < randomdatacpu.length; ++i) {
-		res.push([i, randomdatacpu[i]])
-	}
-
-	return res;
+function getbandwidthrandom(j) {
+	var previous = randomdatabandwidth[j].length ? randomdatabandwidth[j][randomdatabandwidth[j].length - 1] : 50;
+	var y = previous + Math.random() * 1000000 - 500000;
+	return(y < 0 ? 0 : y > 100000000 ? 100000000 : y);
 }
 
-function getRandomDatabandwidth() {
-	var container = $('#nettraffic');
-	var ret = [];
-	var maximum = container.outerWidth() / 4 || 300;
-	if(randomdatabandwidth[0]==null) {
-		randomdatabandwidth[0] = [];
-	}
-	if(randomdatabandwidth[1]==null) {
-		randomdatabandwidth[1] = [];
-	}
-	for(var j = 0; j < 2; j++ ) {
-		if (randomdatabandwidth[j].length) {
-			randomdatabandwidth[j] = randomdatabandwidth[j].slice(1);
-		}
-
-		while (randomdatabandwidth[j].length < maximum) {
-			var previous = randomdatabandwidth[j].length ? randomdatabandwidth[j][randomdatabandwidth[j].length - 1] : 50;
-			var y = previous + Math.random() * 1000000 - 500000;
-			randomdatabandwidth[j].push(y < 0 ? 0 : y > 100000000 ? 100000000 : y);
-		}
-
-		// zip the generated y values with the x values
-
-		var res = [];
-		for (var i = 0; i < randomdatabandwidth[j].length; ++i) {
-			res.push([i, randomdatabandwidth[j][i]])
-		}
-		ret.push(res);
-	}
-
-	return ret;
+function getcpurandom() {
+	var previous = randomdatacpu.length ? randomdatacpu[randomdatacpu.length - 1] : 50;
+	var y = previous + Math.random() * 10 - 5;
+	return(y < 0 ? 0 : y > 100 ? 100 : y);
 }
 
 function init_userstaticchart() {
@@ -812,6 +970,7 @@ function init_nettrafficchart(data) {
 	    if (data[0][i][1]>miny) miny=data[0][i][1];
 	for(var i=0;i<data[1].length;i++)
 	    if (data[1][i][1]>miny) miny=data[1][i][1];
+	if(miny<1000) miny=1000;
 	nettrafficplot = $.plot(container, nettrrafficseries,
 	{
 		grid:
@@ -840,12 +999,12 @@ function init_nettrafficchart(data) {
 		yaxis:
 		{
 			tickFormatter:function(val, axis) {
-			    if (val > 1000000)
-			        return (val / 1000000).toFixed(axis.tickDecimals) + " MB";
-			    else if (val > 1000)
-			        return (val / 1000).toFixed(axis.tickDecimals) + " kB";
+			    if (val >= 1000000)
+			        return (val / 1000000) + " MB";
+			    else if (val >= 1000)
+			        return (val / 1000) + " kB";
 			    else
-			        return val.toFixed(axis.tickDecimals) + " B";
+			        return val + " B";
 			},
 			min: 0,
 			max: miny,
@@ -894,7 +1053,7 @@ function init_cpuloadchart(data) {
 			data: data,
 			lines:
 			{
-				fill: true
+				fill: false
 			}
 		}
 	];
@@ -965,7 +1124,7 @@ function init_cpuloadchart(data) {
 }
 
 var intervalNattraffic = null;
-function setIntervalNattraffic(type) {
+function setIntervalNattrafficandCpu(type) {
 	intervalNattraffic =
 	setInterval(function updateRandom() {
 		if ($('#dashboardpage').css('display') == 'block' && $('#wifirouterpage').hasClass('active')) {
@@ -974,25 +1133,27 @@ function setIntervalNattraffic(type) {
 	}, 1000);
 }
 
-function setIntervalCpuload() {
-	setInterval(function updateRandom() {
-		if ($('#dashboardpage').css('display') == 'block' && $('#wifirouterpage').hasClass('active')) {
-			statistic('cpu');
-		}
-	}, 1000);
-}
-
 function setIntervalSystemtime() {
 	setInterval(function drawSystemtime() {
 		$('#systemtimestr').html(moment($('#systemtimestr').html()).add(1, 'seconds').utc().format());
-		$('#uptimestr').html(moment($('#uptimestr').html()).add(1, 'seconds').utc().format());
+		// $('#uptimestr').html(moment($('#uptimestr').html()).add(1, 'seconds').utc().format());
+		uptimeVal = moment(uptimeVal).add(1, 'seconds');
+		$('#uptimestr').html(moment(uptimeVal).date()+' day '+moment(uptimeVal).hour()+' hour '+moment(uptimeVal).minute()+' min '+moment(uptimeVal).second()+' sec');
 	}, 1000);
 }
 
 $(document).ready(function() {
 	$('#wifirouterpage-1 .btn-checkbox').click(function() {
+		prevbandwidth[0]=0;
+		prevbandwidth[1]=0;
+		randomdatabandwidth[0]=[];
+		randomdatabandwidth[1]=[];
+		for(var i=0;i<60;i++) {
+		   randomdatabandwidth[0].push(0);
+		   randomdatabandwidth[1].push(0);
+		}
 		clearInterval(intervalNattraffic);
-		setIntervalNattraffic($(this).attr('value'));
+		setIntervalNattrafficandCpu($(this).attr('value'));
 	});
 
 	$('[href="#internetpage"]').on('shown.bs.tab', function() {
@@ -1018,35 +1179,130 @@ $(document).ready(function() {
 	});
 
 	// 連線設備
-	$('#mobiledevicepage-1 .clientlist').on('click', '.wanaccess, .parentfilter, .permitshare, .bandwidthlimit', function(event) {
+	$('#mobiledevicepage-1 .clientlist').on('click', '.wanaccess>label, .parentfilter>label, .i-parentfilter, .storageaccess>label, .bandwidthlimit>label, .i-bandwidthlimit', function(event) {
 		event.preventDefault();
 		switch (true) {
-			case $(this).hasClass('wanaccess'):
-				setclientaccess($(this).parents('tr'));
+			case $(this).parent().hasClass('wanaccess'):
+				setclientaccess($(this));
 				break;
-			case $(this).hasClass('parentfilter'):
-				$('#parentalview').data('data', $(this).parents('tr').data('data'));
-				getparentalcontrl($(this).parents('tr'));
+			case $(this).parent().hasClass('parentfilter'):
+				if ($(this).attr('value')=='1') {
+					$('#parentalview').data('data', $(this).parents('tr').data('data'));
+					getparentalcontrl($(this));
+				} else {
+					setparentalcontrl($(this));
+				}
 				break;
-			case $(this).hasClass('permitshare'):
-				setstorageaccess($(this).parents('tr'));
+			case $(this).hasClass('i-parentfilter'):
+				$(this).siblings('.parentfilter').children('label[value="1"]').trigger('click');
 				break;
-			case $(this).hasClass('bandwidthlimit'):
+			case $(this).parent().hasClass('storageaccess'):
+				setstorageaccess($(this));
+				break;
+			case $(this).parent().hasClass('bandwidthlimit'):
 				var data =$(this).parents('tr').data('data');
-				if ($(this).attr('value')=='true') {
+				if ($(this).attr('value')=='1') {
 					$('#bandwidthlimit .limit>label[value="1"]').trigger('click');
 					$('#bandwidthlimit .upload').val(data.bandwidthlimit.up);
 					$('#bandwidthlimit .download').val(data.bandwidthlimit.down);
+					$('#bandwidthlimit').data({
+						data: data,
+						isSet: (data.bandwidthlimit.up && data.bandwidthlimit.down)?1:0
+					}).modal('show');
 				} else {
-					$('#bandwidthlimit .limit>label[value="0"]').trigger('click');
+					$('#bandwidthlimit .upload').val(0);
+					$('#bandwidthlimit .download').val(0);
+					setbandwidthlimit(data);
 				}
-				$('#bandwidthlimit').data('data', data).modal('show');
+				break;
+			case $(this).hasClass('i-bandwidthlimit'):
+				$(this).siblings('.bandwidthlimit').children('label[value="1"]').trigger('click');
 				break;
 		}
 	});
+	$('#parentalview').on('hidden.bs.modal', function() {
+		$('#mobiledevicepage-1 .clientlist>tr').each(function(index, el) {
+			if ($('#parentalview').data('data').mac==$(el).data('data').mac) {
+				$(el).find('.parentfilter>label[value="'+$('#parentalview').data('isSet')+'"]').addClass('active').siblings().removeClass('active');
+				if ($('#parentalview').data('isSet')==0) {
+					$(el).find('.i-parentfilter').addClass('hide');
+				}
+				return false;
+			}
+		});
+	});
+	$('#bandwidthlimit').on('hidden.bs.modal', function() {
+		$('#mobiledevicepage-1 .clientlist>tr').each(function(index, el) {
+			if ($('#bandwidthlimit').data('data').mac==$(el).data('data').mac) {
+				$(el).find('.bandwidthlimit>label[value="'+$('#bandwidthlimit').data('isSet')+'"]').addClass('active').siblings().removeClass('active');
+				if ($('#bandwidthlimit').data('isSet')==0) {
+					$(el).find('.i-bandwidthlimit').addClass('hide');
+				}
+				return false;
+			}
+		});
+	});
+
+	// search device
+	$('#mobiledevicepage-1 .devicesearch').keyup(function() {
+		var thisVal = $(this).val();
+		$('#mobiledevicepage-1 .clientlist').empty();
+		$.each($('#mobiledevicepage-1 .clientlist').data('data'), function(index, val) {
+			wirelessstatuslist(val);
+		});
+		if (thisVal=='') return;
+		var searchContent = [];
+		$('#mobiledevicepage-1 .clientlist>tr>td.device:contains('+thisVal+')').each(function(index, el) {
+			$.each($('#mobiledevicepage-1 .clientlist').data('data'), function(index1, val) {
+				if ($(el).parent().data('data').device==val.device) {
+					searchContent.push(val);
+				}
+			});
+		});
+		$('#mobiledevicepage-1 .clientlist').empty();
+		$.each(searchContent, function(index, val) {
+			wirelessstatuslist(val);
+		});
+	});
+
+	// filter device
+	$('#mobiledevicepage-1 th.device').click(function() {
+		var deviceArr = [];
+		$('#mobiledevicepage-1 .clientlist>tr').each(function(index, el) {
+			deviceArr.push($(el).data('data').device);
+		});
+		switch ($(this).data('sort')) {
+			case 1:
+				deviceArr.sort();
+				deviceArr.reverse();
+				$(this).data('sort', 0).removeClass('sort');
+				break;
+			case 0:
+				deviceArr.sort();
+				$(this).data('sort', 1).addClass('sort');
+				break;
+			default:
+				deviceArr.sort();
+				$(this).data('sort', 1).addClass('sort');
+				break;
+		}
+		var filterContent = [];
+		$.each(deviceArr, function(index, val) {
+			$('#mobiledevicepage-1 .clientlist>tr').each(function(index1, el) {
+				if (val==$(el).data('data').device) {
+					filterContent.push($(el).data('data'));
+				}
+			});
+		});
+		$('#mobiledevicepage-1 .clientlist').empty();
+		$.each(filterContent, function(index, val) {
+			wirelessstatuslist(val);
+		});
+	});
+
 	$('#parentalview').on('click', '.btn-ok', function(event) {
 		event.preventDefault();
-		setparentalcontrl($('#parentalview').data('data'));
+		setparentalcontrl($(this));
 	});
 	$('#parentalview').on('shown.bs.modal', function() {
 		$(this).modal('handleUpdate');
@@ -1064,5 +1320,26 @@ $(document).ready(function() {
 	});
 	$('#bandwidthlimit .apply').click(function() {
 		setbandwidthlimit($('#bandwidthlimit').data('data'));
+	});
+
+	$('#wifirouterpage-2').on('click', '.updatefever', function(event) {
+		event.preventDefault();
+		$.ajax({
+			type: 'GET',
+			url: 'http://download.thinkbroadband.com/20MB.zip',
+			xhrFields: {
+				onprogress: function(event) {
+					//Download progress
+					if (event.lengthComputable) {
+						$('#wifirouterpage-2 .updatefever').html(event.loaded/event.total*100+'%');
+					}
+				}
+			},
+			success: function(data, textStatus, jqXHR) {
+				console.log(data);
+				console.log(textStatus);
+				console.log(jqXHR);
+			}
+		});
 	});
 });

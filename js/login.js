@@ -2,8 +2,7 @@ function defaultTrigger() {
 	getlanguages();
 	systeminfo();
 	setIntervalSystemtime();
-	setIntervalNattraffic('lan');
-	setIntervalCpuload();
+	setIntervalNattrafficandCpu('lan');
 	eventmsg();
 	getselectlist();
 }

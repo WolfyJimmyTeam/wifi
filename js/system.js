@@ -318,12 +318,15 @@ function getnotificationset() {
 					username:'',
 					password:'',
 					notifytype:[{
+						id: 0,
 						type: 'Login',
 						onoff: 0
 					},{
+						id: 1,
 						type: 'Channel Changes',
 						onoff: 1
 					},{
+						id: 2,
 						type: 'WAN down notification',
 						onoff: 1
 					}],
@@ -345,7 +348,7 @@ function getnotificationset() {
 			$('#notificationpagesubject').val(data.feed.data.subject);
 			$('#notificationpageeventselectlist').empty();
 			$.each(data.feed.data.notifytype, function (index,notifytype){
-				$('#notificationpageeventselectlist').append('<li><a href="#" class="small" data-value="'+notifytype.type+'" tabIndex="-1"><input type="checkbox"/>&nbsp;'+notifytype.type+'</a></li>');
+				$('#notificationpageeventselectlist').append('<li><a href="#" class="small" typeid="'+notifytype.id+'" data-value="'+notifytype.type+'" tabIndex="-1"><input type="checkbox"'+((notifytype.onoff)?'checked':'')+'/>&nbsp;'+notifytype.type+'</a></li>');
 			});
 			$('.emailrecvlist tbody').empty();
             $.each(data.feed.data.emails,function (index,emails) {
@@ -371,11 +374,11 @@ function notificationset(type) {
 
     $('#notificationpageeventselectlist li').each( function (index,value) {
     	var notify=null;
-    	var inputdatavalue = $(this).find('a').attr('data-value');
+    	var typeid = $(this).find('a').attr('typeid');
     	if($(this).find('a input').prop('checked')) {
-    		notify={type:inputdatavalue,onoff:1};
+    		notify={id:typeid,onoff:1};
     	} else {
-    		notify={type:inputdatavalue,onoff:0};
+    		notify={id:typeid,onoff:0};
     	}
     	notifytype.push(notify);
 	});

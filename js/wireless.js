@@ -1,3 +1,4 @@
+
 function wirelesssetVal(data) {
 	var selectlist;
 	$('#simplegeneralpage .ssid').val(data.ssid);
@@ -18,12 +19,12 @@ function wirelesssetVal(data) {
 	$('#simplegeneralpage .ssidhide>label[value="'+data.ssidhide+'"]').addClass('active').siblings().removeClass('active');
 	$('#wirelesswpamode').val(data.authmode).trigger('change');
 	$('#simplegeneralpage .wpa-pskkey').val(data['wpa-pskkey']);
-	$('#wepencryption').val(data['wpe-encrypt']).trigger('change');
-	$('#wepkeyindex').val(data['wpe-keyindex']);
-	$('#webkey1').val(data['wpe-key1']);
-	$('#webkey2').val(data['wpe-key2']);
-	$('#webkey3').val(data['wpe-key3']);
-	$('#webkey4').val(data['wpe-key4']);
+	$('#wepencryption').val(data['wep-encrypt']).trigger('change');
+	$('#wepkeyindex').val(data['wep-keyindex']);
+	$('#webkey1').val(data['wep-key1']);
+	$('#webkey2').val(data['wep-key2']);
+	$('#webkey3').val(data['wep-key3']);
+	$('#webkey4').val(data['wep-key4']);
 	$('#simplegeneralpage .bgprotect>label[value="'+data.bgprotect+'"]').addClass('active').siblings().removeClass('active');
 	if(data.type==0) {
 		selectlist=$('#simplegeneralpage .mode').data('24G');
@@ -51,8 +52,19 @@ function wirelesssetVal(data) {
 			$('#simplegeneralpage .bandwidth').append('<option value="'+selectlist.value+'" selected>'+selectlist.text+'</option>');
 	});
 	$('#simplegeneralpage .bandwidth').val(data.bandwidth);
+	if(data.type==1) {
+		selectlist=$('#simplegeneralpage .bandwidth1').data('5G');
+		$('#simplegeneralpage .bandwidth1').empty();
+		$.each(selectlist.selectlist, function (index,selectlist) {
+			if(selectlist.defaultoption==0)
+				$('#simplegeneralpage .bandwidth1').append('<option value="'+selectlist.value+'">'+selectlist.text+'</option>');
+			else
+				$('#simplegeneralpage .bandwidth1').append('<option value="'+selectlist.value+'" selected>'+selectlist.text+'</option>');
+		});
+		$('#simplegeneralpage .bandwidth1').val(data.bandwidth1);
+	}
 	$('#wpaencryption').val(data.wpaencrypt);
-	$('#wpaencryption').val(data.protectedmanageframe);
+	$('#simplegeneralpage .protectedmanageframe').val(data.protectedmanageframe);
 	$('#simplegeneralpage .maxconnect').val(data.maxconnect);
 	$('#simplegeneralpage .keyturninterval').val(data.keyturninterval);
 }
@@ -82,12 +94,12 @@ function getwirelessset() {
 							ssidhide: 0,
 							authmode: 2,
 							'wpa-pskkey': '2.4key',
-							'wpe-encrypt': 1,
-							'wpe-keyindex': 1,
-							'wpe-key1': '2.4key',
-							'wpe-key2': '2.4key',
-							'wpe-key3': '2.4key',
-							'wpe-key4': '2.4key',
+							'wep-encrypt': 1,
+							'wep-keyindex': 1,
+							'wep-key1': '2.4key',
+							'wep-key2': '2.4key',
+							'wep-key3': '2.4key',
+							'wep-key4': '2.4key',
 							bgprotect: 0,
 							mode: 3,
 							bandwidth: 0,
@@ -105,15 +117,16 @@ function getwirelessset() {
 							ssidhide: 0,
 							authmode: 2,
 							'wpa-pskkey': '5key',
-							'wpe-encrypt': 1,
-							'wpe-keyindex': 1,
-							'wpe-key1': '5key',
-							'wpe-key2': '5key',
-							'wpe-key3': '5key',
-							'wpe-key4': '5key',
+							'wep-encrypt': 1,
+							'wep-keyindex': 1,
+							'wep-key1': '5key',
+							'wep-key2': '5key',
+							'wep-key3': '5key',
+							'wep-key4': '5key',
 							bgprotect: 0,
 							mode: 3,
 							bandwidth: 0,
+							bandwidth1: 0,
 							extendchannel: '',
 							wpaencrypt: 0,
 							protectedmanageframe: 0,
@@ -155,15 +168,16 @@ function wirelessset() {
 		ssidhide: parseInt($('#simplegeneralpage .ssidhide>label.active').attr('value')),
 		authmode: parseInt($('#wirelesswpamode').val()),
 		'wpa-pskkey': $('#simplegeneralpage .wpa-pskkey').val(),
-		'wpe-encrypt': $('#wepencryption').val(),
-		'wpe-keyindex': $('#wepkeyindex').val(),
-		'wpe-key1': $('#webkey1').val(),
-		'wpe-key2': $('#webkey2').val(),
-		'wpe-key3': $('#webkey3').val(),
-		'wpe-key4': $('#webkey4').val(),
+		'wep-encrypt': $('#wepencryption').val(),
+		'wep-keyindex': $('#wepkeyindex').val(),
+		'wep-key1': $('#webkey1').val(),
+		'wep-key2': $('#webkey2').val(),
+		'wep-key3': $('#webkey3').val(),
+		'wep-key4': $('#webkey4').val(),
 		bgprotect: parseInt($('#simplegeneralpage .bgprotect>label.active').attr('value')),
 		mode: parseInt($('#simplegeneralpage .mode').val()),
 		bandwidth: parseInt($('#simplegeneralpage .bandwidth').val()),
+		bandwidth1: parseInt($('#simplegeneralpage .bandwidth1').val()),
 		wpaencrypt: parseInt($('#wpaencryption').val()),
 		protectedmanageframe: parseInt($('#simplegeneralpage .protectedmanageframe').val()),
 		maxconnect: $('#simplegeneralpage .maxconnect').val(),
@@ -338,6 +352,47 @@ function getwirelesswpsset() {
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
+function getwirelesswpsset_statusonly(type) {
+	console.log(type);
+	var postData =
+	{
+		method: 'getwirelesswpsset',
+		sessionid: sessionID,
+		type:type,
+		statusonly:true
+	};
+	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+		var data =
+		{
+			stat: 'success',
+			feed:
+			{
+				msg: 'Success',
+				data:
+				{
+					set:
+					[
+						{
+							type: type,
+							connectionstatus: 'Connect',
+						}
+					]
+				}
+			}
+		};
+		if (data.stat == 'success') {
+			updatetrigger=false;
+
+			$('#wpspage .connectionstatus').html(data.feed.data.set[0].connectionstatus);
+
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
+		} else {
+			myalert(data.feed.msg);
+		}
+	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
 function wirelesswpsset() {
 	var postData =
 	{
@@ -347,7 +402,7 @@ function wirelesswpsset() {
 		wpsenable: parseInt($('#wpspage .wpsenable>label.active').attr('value')),
 		connectionstatus: $('#wpspage .connectionstatus').html(),
 		configured: $('#wpspage .configured').html(),
-		wpspincodeenable: parseInt($('#wpspincodeenable').val()),
+		wpsmethod: parseInt($('#wpspincodeenable').val()),
 		pincode: $('#wpspage .pincode').html(),
 		clientpincode: $('#wpspincode').val()
 	};
@@ -373,13 +428,13 @@ function wirelessaclsetVal(data) {
 	$('#aclpage .macfilterenable>label[value="'+data.macfilterenable+'"]').addClass('active').siblings().removeClass('active');
 	$('#aclpage .mode').val(data.mode);
 	$('#aclpage .multiSelect-from, #aclpage .acls').empty();
+	$.each(data.acls, function(index, val) {
+		$('#aclpage .acls').append('<li>'+val+'</li>');
+	});
 	var total = getmaclists();
 	$.each(total, function(index, val) {
 		if ($.inArray(val, data.acls)<0) {
 			$('#aclpage .multiSelect-from').append('<li>'+val+'</li>');
-		}
-		if ($.inArray(val, data.acls)>-1) {
-			$('#aclpage .acls').append('<li>'+val+'</li>');
 		}
 	});
 }
@@ -859,13 +914,13 @@ function wirelessatfsetVal(data) {
 	$("#atfbar").slider('value', data.percentage);
 	$("#atfpercent").val(data.percentage+'%');
 	$('#atfpage .multiSelect-from, #atfpage .acls').empty();
+	$.each(data.acls, function(index, val) {
+		$('#atfpage .acls').append('<li>'+val+'</li>');
+	});
 	var total = getmaclists();
 	$.each(total, function(index, val) {
 		if ($.inArray(val, data.acls)<0) {
 			$('#atfpage .multiSelect-from').append('<li>'+val+'</li>');
-		}
-		if ($.inArray(val, data.acls)>-1) {
-			$('#atfpage .acls').append('<li>'+val+'</li>');
 		}
 	});
 }
@@ -1070,13 +1125,14 @@ function wirelessmeshset() {
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
 
+var wpspagestatusrefreshinterval = null;
 $(document).ready(function() {
 	// general
 	$("a[href='#wificonfigpage']").on('shown.bs.tab', function(e) {
 		$('#simplegeneralindex').parent('li').siblings('li').removeClass('active');
 		$('#simplegeneralindex').parent('li').addClass('active');
-		$('#simplegeneralpage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#simplegeneralpage').attr('style', 'display:block;');
+		$('#simplegeneralpage').siblings('div.genconfig').hide();
+		$('#simplegeneralpage').show();
 		getwirelessset();
 	});
 	$(document).on('click', '#simplegeneralindex', function(e) {
@@ -1085,77 +1141,83 @@ $(document).ready(function() {
 		} catch (e) {}
 		$(this).parents('ul').children('li').removeClass('active');
 		$(this).parent('li').addClass('active');
-		$('#simplegeneralpage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#simplegeneralpage').attr('style', 'display:block;');
+		$('#simplegeneralpage').siblings('div.genconfig').hide();
+		$('#simplegeneralpage').show();
 		$('#wifinavbar.navbar-toggle:visible').click();
 		getwirelessset();
 	});
 	$(document).on('change', '#wirelessmodeswitch', function(e) {
+		updatetrigger=false;
 		switch ($(this).val()) {
 			case '0':
-				$('.wirelessonly24g').attr('style', 'display:block;');
+				$('.wirelessonly24g').show();
+				$('#simplegeneralpage .5gbandwidth').hide();
 				$.each($('#wirelessmodeswitch').data('data'), function(index, val) {
 					if (val.type==0) {
 						wirelesssetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
 				break;
 			case '1':
-				$('.wirelessonly24g').attr('style', 'display:none;');
+				$('.wirelessonly24g').hide();
+				$('#simplegeneralpage .5gbandwidth').show();
 				$.each($('#wirelessmodeswitch').data('data'), function(index, val) {
 					if (val.type==1) {
 						wirelesssetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
 				break;
 		}
+		updatetrigger=true;
 	});
 	$(document).on('change', '#wirelesswpamode', function(e) {
-		$('.opensystem,.sharekey,.wpapersonal,.wpaenterprise,.wpaenterprise2').attr('style', 'display:none;');
+		$('.opensystem,.sharekey,.wpapersonal,.wpaenterprise,.wpaenterprise2').hide();
 
 		switch ($(this).val()) {
 			case '0':
-				$('.opensystem').attr('style', 'display:block;');
+				$('.opensystem').show();
 				$('#wepencryption').empty().append('<option value="0">None</option>' +
 					'<option value="1">WEP-64bits</option>' +
 					'<option value="2">WEP-128bits</option>');
 				if ($('#wepencryption').val() == '0') {
-					$('#wepkeyindex,#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().attr('style', 'display:none;')
+					$('#wepkeyindex,#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().hide()
 				} else {
-					$('#wepkeyindex,#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().attr('style', 'display:block;')
+					$('#wepkeyindex,#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().show()
 				}
 				break;
 			case '1':
-				$('.sharekey').attr('style', 'display:block;');
+				$('.sharekey').show();
 				$('#wepencryption').empty().append('<option value="1" selected>WEP-64bits</option>' +
 					'<option value="2">WEP-128bits</option>');
-				$('#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().attr('style', 'display:block;')
+				$('#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().show()
 				break;
 			case '2':
-				$('.wpapersonal').attr('style', 'display:block;');
+				$('.wpapersonal').show();
 				$('#wpaencryption').empty().append('<option value="0">TKIP</option>');
 				break;
 			case '3':
-				$('.wpapersonal').attr('style', 'display:block;');
+				$('.wpapersonal').show();
 				$('#wpaencryption').empty().append('<option value="1">AES</option>');
 				break;
 			case '4':
-				$('.wpapersonal').attr('style', 'display:block;');
+				$('.wpapersonal').show();
 				$('#wpaencryption').empty().append('<option value="1">AES</option>' +
 					'<option value="2">TKIP+AES</option>');
 				break;
 			case '5':
-				$('.wpaenterprise').attr('style', 'display:block;');
+				$('.wpaenterprise').show();
 				$('#wpaencryption').empty().append('<option value="0">TKIP</option>');
 				break;
 			case '6':
-				$('.wpaenterprise,.wpaenterprise2').attr('style', 'display:block;');
+				$('.wpaenterprise,.wpaenterprise2').show();
 				$('#wpaencryption').empty().append('<option value="1">AES</option>');
 				break;
 			case '7':
-				$('.wpaenterprise').attr('style', 'display:block;');
+				$('.wpaenterprise').show();
 				$('#wpaencryption').empty().append('<option value="1">AES</option>' +
 					'<option value="2">TKIP+AES</option>');
 				break;
@@ -1170,9 +1232,9 @@ $(document).ready(function() {
 	});
 	$(document).on('change', '#wepencryption', function(e) {
 		if ($(this).val() == '0') {
-			$('#wepkeyindex,#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().attr('style', 'display:none;')
+			$('#wepkeyindex,#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().hide()
 		} else {
-			$('#wepkeyindex,#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().attr('style', 'display:block;')
+			$('#wepkeyindex,#webkey1,#webkey2,#webkey3,#webkey4').parent().parent().show()
 		}
 	});
 	$('#simplegeneralpage .apply').click(function() {
@@ -1186,17 +1248,19 @@ $(document).ready(function() {
 		} catch (e) {}
 		$(this).parents('ul').children('li').removeClass('active');
 		$(this).parent('li').addClass('active');
-		$('#wifiguestpage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#wifiguestpage').attr('style', 'display:block;');
+		$('#wifiguestpage').siblings('div.genconfig').hide();
+		$('#wifiguestpage').show();
 		$('#wifinavbar.navbar-toggle:visible').click();
 		getwirelessguestset();
 	});
 	$('#wifiguestpage .type').change(function() {
+		updatetrigger=false;
 		switch ($(this).val()) {
 			case '0':
 				$.each($('#wifiguestpage .type').data('data'), function(index, val) {
 					if (val.type==0) {
 						wirelessguestsetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
@@ -1204,12 +1268,14 @@ $(document).ready(function() {
 			case '1':
 				$.each($('#wifiguestpage .type').data('data'), function(index, val) {
 					if (val.type==1) {
+						updatetrigger=true;
 						wirelessguestsetVal(val);
 						return false;
 					}
 				});
 				break;
 		}
+		updatetrigger=true;
 	});
 	$('#wifiguestpage .apply').click(function() {
 		wirelessguestset();
@@ -1222,17 +1288,25 @@ $(document).ready(function() {
 		} catch (e) {}
 		$(this).parents('ul').children('li').removeClass('active');
 		$(this).parent('li').addClass('active');
-		$('#wpspage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#wpspage').attr('style', 'display:block;');
+		$('#wpspage').siblings('div.genconfig').hide();
+		$('#wpspage').show();
 		$('#wifinavbar.navbar-toggle:visible').click();
 		getwirelesswpsset();
+		wpspagestatusrefreshinterval = setInterval(function getwpsstatus() {
+			getwirelesswpsset_statusonly(Number($('#wpspage .type').val()));
+		}, 2000);
+	});
+	$('#wpspage').on('hide', function(){
+		clearInterval(wpspagestatusrefreshinterval);
 	});
 	$('#wpspage .type').change(function() {
+		updatetrigger=false;
 		switch ($(this).val()) {
 			case '0':
 				$.each($('#wpspage .type').data('data'), function(index, val) {
 					if (val.type==0) {
 						wirelesswpssetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
@@ -1241,11 +1315,13 @@ $(document).ready(function() {
 				$.each($('#wpspage .type').data('data'), function(index, val) {
 					if (val.type==1) {
 						wirelesswpssetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
 				break;
 		}
+		updatetrigger=true;
 	});
 	$('#wpspage .apply').click(function() {
 		wirelesswpsset();
@@ -1258,17 +1334,19 @@ $(document).ready(function() {
 		} catch (e) {}
 		$(this).parents('ul').children('li').removeClass('active');
 		$(this).parent('li').addClass('active');
-		$('#aclpage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#aclpage').attr('style', 'display:block;');
+		$('#aclpage').siblings('div.genconfig').hide();
+		$('#aclpage').show();
 		$('#wifinavbar.navbar-toggle:visible').click();
 		getwirelessaclset();
 	});
 	$('#aclpage .type').change(function() {
+		updatetrigger=false;
 		switch ($(this).val()) {
 			case '0':
 				$.each($('#aclpage .type').data('data'), function(index, val) {
 					if (val.type==0) {
 						wirelessaclsetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
@@ -1277,11 +1355,13 @@ $(document).ready(function() {
 				$.each($('#aclpage .type').data('data'), function(index, val) {
 					if (val.type==1) {
 						wirelessaclsetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
 				break;
 		}
+		updatetrigger=true;
 	});
 	$('#aclpage .apply').click(function() {
 		wirelessaclset();
@@ -1294,17 +1374,19 @@ $(document).ready(function() {
 		} catch (e) {}
 		$(this).parents('ul').children('li').removeClass('active');
 		$(this).parent('li').addClass('active');
-		$('#schedulepage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#schedulepage').attr('style', 'display:block;');
+		$('#schedulepage').siblings('div.genconfig').hide();
+		$('#schedulepage').show();
 		$('#wifinavbar.navbar-toggle:visible').click();
 		getwirelessscheduleset();
 	});
 	$('#schedulepage .type').change(function() {
+		updatetrigger=false;
 		switch ($(this).val()) {
 			case '0':
 				$.each($('#schedulepage .type').data('data'), function(index, val) {
 					if (val.type==0) {
 						wirelessschedulesetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
@@ -1313,11 +1395,13 @@ $(document).ready(function() {
 				$.each($('#schedulepage .type').data('data'), function(index, val) {
 					if (val.type==1) {
 						wirelessschedulesetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
 				break;
 		}
+		updatetrigger=true;
 	});
 	$('#schedulepage .apply').click(function() {
 		wirelessscheduleset();
@@ -1330,17 +1414,19 @@ $(document).ready(function() {
 		} catch (e) {}
 		$(this).parents('ul').children('li').removeClass('active');
 		$(this).parent('li').addClass('active');
-		$('#radiuspage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#radiuspage').attr('style', 'display:block;');
+		$('#radiuspage').siblings('div.genconfig').hide();
+		$('#radiuspage').show();
 		$('#wifinavbar.navbar-toggle:visible').click();
 		getwirelessradiusset();
 	});
 	$('#radiuspage .type').change(function() {
+		updatetrigger=false;
 		switch ($(this).val()) {
 			case '0':
 				$.each($('#radiuspage .type').data('data'), function(index, val) {
 					if (val.type==0) {
 						wirelessradiussetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
@@ -1349,11 +1435,13 @@ $(document).ready(function() {
 				$.each($('#radiuspage .type').data('data'), function(index, val) {
 					if (val.type==1) {
 						wirelessradiussetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
 				break;
 		}
+		updatetrigger=true;
 	});
 	$('#radiuspage .apply').click(function() {
 		wirelessradiusset();
@@ -1366,17 +1454,19 @@ $(document).ready(function() {
 		} catch (e) {}
 		$(this).parents('ul').children('li').removeClass('active');
 		$(this).parent('li').addClass('active');
-		$('#professionalpage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#professionalpage').attr('style', 'display:block;');
+		$('#professionalpage').siblings('div.genconfig').hide();
+		$('#professionalpage').show();
 		$('#wifinavbar.navbar-toggle:visible').click();
 		getwirelessprofessionset();
 	});
 	$('#professionalpage .type').change(function() {
+		updatetrigger=false;
 		switch ($(this).val()) {
 			case '0':
 				$.each($('#professionalpage .type').data('data'), function(index, val) {
 					if (val.type==0) {
 						wirelessprofessionsetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
@@ -1385,11 +1475,13 @@ $(document).ready(function() {
 				$.each($('#professionalpage .type').data('data'), function(index, val) {
 					if (val.type==1) {
 						wirelessprofessionsetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
 				break;
 		}
+		updatetrigger=true;
 	});
 	$('#professionalpage .apply').click(function() {
 		wirelessprofessionset();
@@ -1402,17 +1494,19 @@ $(document).ready(function() {
 		} catch (e) {}
 		$(this).parents('ul').children('li').removeClass('active');
 		$(this).parent('li').addClass('active');
-		$('#atfpage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#atfpage').attr('style', 'display:block;');
+		$('#atfpage').siblings('div.genconfig').hide();
+		$('#atfpage').show();
 		$('#wifinavbar.navbar-toggle:visible').click();
 		getwirelessatfset();
 	});
 	$('#atfpage .type').change(function() {
+		updatetrigger=false;
 		switch ($(this).val()) {
 			case '0':
 				$.each($('#atfpage .type').data('data'), function(index, val) {
 					if (val.type==0) {
 						wirelessatfsetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
@@ -1421,6 +1515,7 @@ $(document).ready(function() {
 				$.each($('#atfpage .type').data('data'), function(index, val) {
 					if (val.type==1) {
 						wirelessatfsetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
@@ -1438,17 +1533,19 @@ $(document).ready(function() {
 		} catch (e) {}
 		$(this).parents('ul').children('li').removeClass('active');
 		$(this).parent('li').addClass('active');
-		$('#meshpage').siblings('div.genconfig').attr('style', 'display:none;');
-		$('#meshpage').attr('style', 'display:block;');
+		$('#meshpage').siblings('div.genconfig').hide();
+		$('#meshpage').show();
 		$('#wifinavbar.navbar-toggle:visible').click();
 		getwirelessmeshset();
 	});
 	$('#meshpage .type').change(function() {
+		updatetrigger=false;
 		switch ($(this).val()) {
 			case '0':
 				$.each($('#meshpage .type').data('data'), function(index, val) {
 					if (val.type==0) {
 						wirelessmeshsetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
@@ -1457,11 +1554,13 @@ $(document).ready(function() {
 				$.each($('#meshpage .type').data('data'), function(index, val) {
 					if (val.type==1) {
 						wirelessmeshsetVal(val);
+						updatetrigger=true;
 						return false;
 					}
 				});
 				break;
 		}
+		updatetrigger=true;
 	});
 	$('#meshpage .apply').click(function() {
 		wirelessmeshset();

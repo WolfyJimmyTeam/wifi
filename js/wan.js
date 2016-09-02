@@ -88,6 +88,45 @@ function getwandefault(type) {
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
 }
 
+function ltetrigger(data) {
+	$('#gotonetpage-1 .ltetype').show();
+	$('#gotonetpage-1 .ltewantype').val(data.feed.data.ltesupport).trigger('change');
+	$('#gotonetpage-1 .lteconfig>label[value="0"]').trigger('click');
+	$('#gotonetpage-1 .ltemode').empty();
+	$.each(data.feed.data.ltemode, function(index, val) {
+		$('#gotonetpage-1 .ltemode').append(
+			'<option value="'+val.id+'"'+((val.active)?'selected':'')+'>'+val.type+'</option>'
+		);
+	});
+	$('#gotonetpage-1 .ltesimstatus').html(data.feed.data.ltesimstatus);
+	$('#gotonetpage-1 .lterssi').html(data.feed.data.lterssi+' dBm');
+	$('#gotonetpage-1 .ltenetwork').html(data.feed.data.ltenetwork);
+	$('#gotonetpage-1 .lteapn').val(data.feed.data.lteapn);
+	$('#gotonetpage-1 .ltedialnumber').val(data.feed.data.ltedialnumber);
+	$('#gotonetpage-1 .lteusername').val(data.feed.data.lteusername);
+	$('#gotonetpage-1 .ltepassword').val(data.feed.data.ltepassword);
+	$('#gotonetpage-1 .lteroaming>label[value="'+data.feed.data.lteroaming+'"]').addClass('active').siblings().removeClass('active');
+	$('#gotonetpage-1 .ltepreferredsystem').empty();
+	$.each(data.feed.data.ltepreferredsystem, function(index, val) {
+		$('#gotonetpage-1 .ltepreferredsystem').append(
+			'<option value="'+val.id+'"'+((val.active)?'selected':'')+'>'+val.type+'</option>'
+		);
+	});
+	$('#gotonetpage-1 .ltepreferredband').empty();
+	$.each(data.feed.data.ltepreferredband, function(index, val) {
+		$('#gotonetpage-1 .ltepreferredband').append(
+			'<option value="'+val.id+'"'+((val.active)?'selected':'')+'>'+val.type+'</option>'
+		);
+	});
+	$('#gotonetpage-1 .lteiptype').val(data.feed.data.lteiptype);
+	$('#gotonetpage-1 .lteautostart>label[value="'+data.feed.data.lteautostart+'"]').addClass('active').siblings().removeClass('active');
+	$('#gotonetpage-1 .lteconnectionstatus').html(data.feed.data.lteconnectionstatus);
+	if (data.feed.data.lteconnectionstatus=='Connect') {
+		$('#gotonetpage-1 .setlteconnect').data('connect', 0).html('Disconnect');
+	} else {
+		$('#gotonetpage-1 .setlteconnect').data('connect', 1).html('Connect');
+	}
+}
 function getwanset() {
 	var postData =
 	{
@@ -124,12 +163,89 @@ function getwanset() {
 					concentratorname:'',
 					mac:'',
 					defaultmac:'23:32:44:65:00:21',
-					dhcpupdatefreq:0
+					dhcpupdatefreq:0,
+					ispukcodelock: 0,
+					enablepinlock: 1,
+					ltesupport: 1,
+					ltemode:
+					[
+						{
+							id: 0,
+							type: '2G',
+							active: 0
+						},
+						{
+							id: 1,
+							type: '3G',
+							active: 0
+						},
+						{
+							id: 2,
+							type: '4G',
+							active: 1
+						}
+					],
+					ltesimstatus: 'Ready',
+					lterssi: -20,
+					ltenetwork: 'Chunghwa Telecom',
+					lteapn: 'internet',
+					ltedialnumber: '0912345678',
+					lteusername: 'Jimmy',
+					ltepassword: '12345678',
+					lteroaming: 0,
+					ltepreferredsystem:
+					[
+						{
+							id: 0,
+							type: 'Chunghwa Telecom',
+							active: 0
+						},
+						{
+							id: 1,
+							type: 'FarEastone',
+							active: 1
+						}
+					],
+					ltepreferredband:
+					[
+						{
+							id: 0,
+							type: '2.4G',
+							active: 0
+						},
+						{
+							id: 1,
+							type: '5G',
+							active: 1
+						}
+					],
+					lteiptype: 1,
+					lteautostart: 1,
+					lteconnectionstatus: 'Connect'
 				}
 			}
 		};
 		if (data.stat == 'success') {
 			updatetrigger=false;
+
+			$('#gotonetpage-1 .ltegeneral, #gotonetpage-1 .ltetype, #gotonetpage-1 .lteadv, #gotonetpage-1 .ltepin, #gotonetpage-1 .ltepuk').hide();
+
+			if (data.feed.data.ltesupport==0) {
+				return;
+			}
+
+			$('#internetconfigpage').data('data', data);
+
+			if (data.feed.data.ispukcodelock) {
+				$('#gotonetpage-1 .ltepukcode').val('');
+				$('#gotonetpage-1 .ltepukbtn').show();
+			} else if (data.feed.data.enablepinlock) {
+				$('#gotonetpage-1 .ltepincode').val('');
+				$('#gotonetpage-1 .ltepinbtn').show();
+			} else {
+				ltetrigger(data);
+			}
+
 
 			$('#gotonetpagewantype').val(data.feed.data.wantype).trigger('change');
 			if(data.feed.data.ip=='')
@@ -169,6 +285,222 @@ function getwanset() {
 			$('#gotonetpagehostname').val(data.feed.data.hostname);
 			$('#gotonetpagemac').val(data.feed.data.mac).data('defaultmac',data.feed.data.defaultmac);
 			$('#gotonetpagedhcpupdatefreq').val(data.feed.data.dhcpupdatefreq);
+
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
+		} else {
+			myalert(data.feed.msg);
+		}
+	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+
+function ltepukcodeunlock() {
+	if ($('#gotonetpage-1 .ltepukcode').val()=='') return;
+	var postData =
+	{
+		method: 'ltepukcodeunlock',
+		sessionid: sessionID
+	};
+
+	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+		var data =
+		{
+			stat: 'success',
+			feed:
+			{
+				msg: 'Success'
+			}
+		};
+		if (data.stat == 'success') {
+			updatetrigger=false;
+
+			$('#gotonetpage-1 .ltepuk').hide();
+			ltetrigger($('#internetconfigpage').data('data'));
+
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
+		} else {
+			myalert(data.feed.msg);
+		}
+	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+function ltepincodeunlock() {
+	if ($('#gotonetpage-1 .ltepincode').val()=='') return;
+	var postData =
+	{
+		method: 'ltepincodeunlock',
+		sessionid: sessionID
+	};
+
+	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+		var data =
+		{
+			stat: 'success',
+			feed:
+			{
+				msg: 'Success',
+				data:
+				{
+					needpuk: 0
+				}
+			}
+		};
+		if (data.stat == 'success') {
+			updatetrigger=false;
+
+			if (data.feed.data.needpuk) {
+				$('#gotonetpage-1 .ltepukcode, #gotonetpage-1 .ltepincode').val('');
+				$('#gotonetpage-1 .ltepin').hide();
+				$('#gotonetpage-1 .ltepuk').show();
+				$('#gotonetpage-1 .ltepukcode').focus();
+			} else {
+				$('#gotonetpage-1 .ltepin').hide();
+				ltetrigger($('#internetconfigpage').data('data'));
+			}
+
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
+		} else {
+			myalert(data.feed.msg);
+		}
+	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+function setltepincode() {
+	if ($('#gotonetpage-1 .setltepincode').val()=='') return;
+	var postData =
+	{
+		method: 'setltepincode',
+		sessionid: sessionID,
+		pincode: $('#gotonetpage-1 .setltepincode').val()
+	};
+	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+		var data =
+		{
+			stat: 'success',
+			feed:
+			{
+				msg: 'Success'
+			}
+		};
+		if (data.stat == 'success') {
+			updatetrigger=false;
+
+			$('#gotonetpage-1 .setltepincode').val('');
+
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
+		} else {
+			myalert(data.feed.msg);
+		}
+	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+function getltenetwork() {
+	var postData =
+	{
+		method: 'getltenetwork',
+		sessionid: sessionID
+	};
+
+	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+		var data =
+		{
+			stat: 'success',
+			feed:
+			{
+				msg: 'Success',
+				data:
+				{
+					networklist:
+					[
+						{
+							name: 'Chunghwa Telecom'
+						},
+						{
+							name: 'FarEastone'
+						}
+					]
+				}
+			}
+		};
+		if (data.stat == 'success') {
+			updatetrigger=false;
+
+			$('#modal-networklist .list').empty();
+			$.each(data.feed.data.networklist, function(index, val) {
+				$('#modal-networklist .list').append(
+					'<tr>'+
+						'<td>'+val.name+'</td>'+
+					'</tr>'
+				).children('tr:last-child').data('data', val);
+			});
+			$('#modal-networklist').modal('show');
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
+		} else {
+			myalert(data.feed.msg);
+		}
+	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+function setltenetwork(trData) {
+	var postData =
+	{
+		method: 'getltenetwork',
+		sessionid: sessionID,
+		data: trData
+	};
+
+	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+		var data =
+		{
+			stat: 'success',
+			feed:
+			{
+				msg: 'Success'
+			}
+		};
+		if (data.stat == 'success') {
+			updatetrigger=false;
+
+			$('#gotonetpage-1 .ltenetwork').html(trData.name);
+			$('#modal-networklist').modal('hide');
+
+			setTimeout(function(){
+				updatetrigger=true;
+			},0)
+		} else {
+			myalert(data.feed.msg);
+		}
+	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
+}
+function setlteconnect() {
+	var connect = $('#gotonetpage-1 .setlteconnect').data('connect');
+	var postData =
+	{
+		method: 'getltenetwork',
+		sessionid: sessionID,
+		connect: connect
+	};
+
+	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
+		var data =
+		{
+			stat: 'success',
+			feed:
+			{
+				msg: 'Success'
+			}
+		};
+		if (data.stat == 'success') {
+			updatetrigger=false;
+
+			$('#gotonetpage-1 .setlteconnect')
+				.data('connect', (connect)?0:1)
+				.html((connect)?'Disconnect':'Connect');
 
 			setTimeout(function(){
 				updatetrigger=true;
@@ -224,7 +556,18 @@ function wanset(type) {
 		servicename:$('#gotonetpageservicename').val(),
 		concentratorname:$('#gotonetpageconcentratorname').val(),
 		mac:mac,
-		dhcpupdatefreq:Number($('#gotonetpagedhcpupdatefreq').val())
+		dhcpupdatefreq:Number($('#gotonetpagedhcpupdatefreq').val()),
+		enablepinlock: Number($('#gotonetpage-1 .lteenablepinlock>label.active').attr('value')),
+		ltemode: Number($('#gotonetpage-1 .ltemode').val()),
+		lteapn: $('#gotonetpage-1 .lteapn').val(),
+		ltedialnumber: $('#gotonetpage-1 .ltedialnumber').val(),
+		lteusername: $('#gotonetpage-1 .lteusername').val(),
+		ltepassword: $('#gotonetpage-1 .ltepassword').val(),
+		lteroaming: Number($('#gotonetpage-1 .lteroaming>label.active').attr('value')),
+		ltepreferredsystem: Number($('#gotonetpage-1 .ltepreferredsystem').val()),
+		ltepreferredband: Number($('#gotonetpage-1 .ltepreferredband').val()),
+		lteiptype: Number($('#gotonetpage-1 .lteiptype').val()),
+		lteautostart: Number($('#gotonetpage-1 .lteautostart>label.active').attr('value')),
 		};
 
 		// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
@@ -689,9 +1032,9 @@ function getportforwardset() {
 			updatetrigger=false;
 
 						$('#portforwardpageenable>label[value="'+data.feed.data.enableportforward+'"]').trigger('click');
-						$('.portfowardlist tbody').empty();
+						$('.portforwardlist tbody').empty();
 						$.each(data.feed.data.portforwardlist,function (index,portforwardlists) {
-								$('.portfowardlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
+								$('.portforwardlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
 										'<td>'+portforwardlists.name+'</td>'+
 										'<td>'+portforwardlists.portrange+'</td>'+
 										'<td>'+portforwardlists.localip+'</td>'+
@@ -1171,7 +1514,7 @@ $(document).ready(function() {
 		});
 		$(document).on('click','#addportforward',function (e) {
 			$('.portfowardadd').attr('style','display:block;');
-			$('.portfowardlist').attr('style','display:none;');
+			$('.portforwardlist').attr('style','display:none;');
 			$(this).attr('style','display:none;');
 			$('#portforwardlisttypecheckbox>label[value="0"]').trigger('click')
 			$('#portforwardpagegamenamelist').val($('#portforwardpagegamenamelist option:first-child').val());
@@ -1220,7 +1563,7 @@ $(document).ready(function() {
 						}
 				}
 				var addokbool = true;
-				$('.portfowardlist tbody tr').each( function (index,value) {
+				$('.portforwardlist tbody tr').each( function (index,value) {
 						var portforwardlists = $(this).data('data');
 						if(portforwardlists.protocol == Number($('#portforwardpageprotocol').val())) {
 							if(portforwardlists.portrange == Number($('#portforwardpageportrange').val())) {
@@ -1292,7 +1635,7 @@ $(document).ready(function() {
 						localip:portforwardpagelocalip,
 						protocol:Number($('#portforwardpageprotocol').val())
 				}
-				$('.portfowardlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
+				$('.portforwardlist tbody').append('<tr><td> <button class="btn btn-default trash"><i class="glyphicon glyphicon-trash"></i></button></td>'+
 						'<td>'+portforwardlists.name+'</td>'+
 						'<td>'+portforwardlists.portrange+'</td>'+
 						'<td>'+portforwardlists.localip+'</td>'+
@@ -1300,12 +1643,12 @@ $(document).ready(function() {
 						'<td>'+$('#portforwardpageprotocol option[value="'+portforwardlists.protocol+'"]').text()+'</td>'+
 						'</tr>').children('tr:last-child').data('data',portforwardlists).end().find('a').popover();
 			$('.portfowardadd').attr('style','display:none;');
-			$('.portfowardlist').attr('style','display:block;');
+			$('.portforwardlist').attr('style','display:block;');
 			$('#addportforward').attr('style','display:block;');
 		});
 		$(document).on('click','#addportforwardcancel',function (e) {
 			$('.portfowardadd').attr('style','display:none;');
-			$('.portfowardlist').attr('style','display:block;');
+			$('.portforwardlist').attr('style','display:block;');
 			$('#addportforward').attr('style','display:block;');
 		});
 		$(document).on('click','#portforwardlisttypecheckbox label',function (e) {
@@ -1324,7 +1667,7 @@ $(document).ready(function() {
 			$('#portforwardpagelocalport').val(portforwardlist.localport);
 			$('#portforwardpageprotocol').val(portforwardlist.protocol);
 		});
-		$(document).on('click','.portfowardlist tbody .trash',function (e) {
+		$(document).on('click','.portforwardlist tbody .trash',function (e) {
 				$(this).parents('tr').remove();
 		});
 		$(document).on('click','#portforwardpage .apply',function (e) {
@@ -1362,13 +1705,36 @@ $(document).ready(function() {
 		});
 
 		// LTE
+		$('#gotonetpage-1 .ltepukbtn').click(function() {
+			$('#gotonetpage-1 .ltepukbtn').hide();
+			$('#gotonetpage-1 .ltepuk').show();
+			$('#gotonetpage-1 .ltepukcode').focus();
+		});
+		$('#gotonetpage-1 .ltepinbtn').click(function() {
+			$('#gotonetpage-1 .ltepinbtn').hide();
+			$('#gotonetpage-1 .ltepin').show();
+			$('#gotonetpage-1 .ltepincode').focus();
+		});
+		$('#gotonetpage-1 .ltepukunlock').click(function() {
+			ltepukcodeunlock();
+		});
+		$('#gotonetpage-1 .ltesimunlock').click(function() {
+			ltepincodeunlock();
+		});
+		$('#gotonetpage-1 .setltepincodeok').click(function() {
+			setltepincode();
+		});
+		$('#gotonetpage-1 .setlteconnect').click(function() {
+			setlteconnect();
+		});
 		$('#gotonetpage-1 .ltewantype').change(function() {
 			switch ($(this).val()) {
 				case '0':
-					$('#gotonetpage-1 .ltetype').hide();
+					$('#gotonetpage-1 .ltegeneral').hide();
+					$('#gotonetpage-1 .lteconfig>label[value="0"]').trigger('click');
 					break;
 				case '1':
-					$('#gotonetpage-1 .ltetype').show();
+					$('#gotonetpage-1 .ltegeneral').show();
 					break;
 			}
 		});
@@ -1378,5 +1744,12 @@ $(document).ready(function() {
 			} else {
 				$('#gotonetpage-1 .lteadv').show();
 			}
+		});
+		$('#gotonetpage-1 .ltenetworkserch').click(function() {
+			getltenetwork();
+		});
+		$('#modal-networklist .list').on('click', 'tr', function(event) {
+			event.preventDefault();
+			setltenetwork($(this).data('data'));
 		});
 });

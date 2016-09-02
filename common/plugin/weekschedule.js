@@ -14,7 +14,7 @@
     startTime   : '00:00',                // HH:mm format
     endTime     : '24:00',                // HH:mm format
     interval    : 60,                     // minutes
-    stringDays  : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+    stringDays  : ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
     template    : '<div class="day-schedule-selector">'         +
                     '<table class="schedule-table">'            +
                       '<thead class="schedule-header"></thead>' +
@@ -94,8 +94,8 @@
             else
                 $el.find('.time-slot[data-day="' + daynumber + '"].time-slot[data-time="' + timestr + '"]').attr('data-selected', 'selected');
         });
-        daynumber++; 
-    });    
+        daynumber++;
+    });
   }
   function getdata() {
     var $el = $(this);
@@ -126,8 +126,8 @@
         if(theday==4) schedule.thr = selectstr;
         if(theday==5) schedule.fri = selectstr;
         if(theday==6) schedule.sat = selectstr;
-    } 
-    return schedule;   
+    }
+    return schedule;
   }
 
   /**
@@ -154,8 +154,8 @@
     this.$el.on('click', '.time-slot', function () {
       var day = $(this).data('day');
       if (!plugin.isSelecting()) {  // if we are not in selecting mode
-        if (isSlotSelected($(this))) { 
-          plugin.deselect($(this)); 
+        if (isSlotSelected($(this))) {
+          plugin.deselect($(this));
           plugin.$selectingStart = $(this);
           $(this).attr('data-selecting', 'unselecting');
           mode = "selected";

@@ -382,10 +382,6 @@ function countDown() {
 function startCountDown(total) {
 	// loading position
 	reloadit=true;
-	$('#loading').css('margin-top', ($(window).height()/2)-($('#loading').height()/2)+$(window).scrollTop()+'px');
-	$('#loading').shCircleLoader({
-		color: '#ff0d00'
-	});
 	$('#loadingdiv').show();
 	$('body').addClass('opacity');
 	countTime = Number(total);
@@ -410,7 +406,6 @@ jQuery.fn.extend({
 //$.POST extend
 jQuery.extend({
 	get: function (url, data, callback, type) {
-		$('#loading').shCircleLoader();
 		$('#loadingdiv').show();
 		// shift arguments if data argument was ommited
 		if (jQuery.isFunction(data)) {
@@ -478,12 +473,17 @@ jQuery.extend({
 		var loading=true;
 		if(data.method=='wizard' || data.method=='reboot' || data.method=='firmwareset'
 			|| data.method=='restoredefault' || data.method=='uploadconfig'
-			 || data.method=='switchmoderouteset' || data.method=='switchmodeset') {
+			|| data.method=='switchmoderouteset' || data.method=='switchmodeset'
+			|| data.method=='statistic'
+			|| (data.method=='getwirelesswpsset' && data.statusonly)
+			|| (data.method=='getpptpserverset' && data.statusonly)
+			|| (data.method=='getopenvpnserverset' && data.statusonly)
+			|| (data.method=='getvpnclientset' && data.statusonly)
+		) {
 			loading=false;
 
 		}
 		if(loading) {
-			$('#loading').shCircleLoader();
 			$('#loadingdiv').show();
 		}
 		if (jQuery.isFunction(data)) {
@@ -559,6 +559,11 @@ jQuery.extend({
 
 
 $(document).ready(function() {
+	$('#loading').css('margin-top', ($(window).height()/2)-($('#loading').height()/2)+$(window).scrollTop()+'px');
+	$('#loading').shCircleLoader({
+		color: '#ff0d00'
+	});
+
 	// modal垂直置中
 	modalCenter($('.popup'));
 
@@ -705,3 +710,13 @@ $(document).ready(function() {
 	});
 
 });
+
+(function ($) {
+	$.each(['show', 'hide'], function (i, ev) {
+		var el = $.fn[ev];
+		$.fn[ev] = function () {
+			this.trigger(ev);
+			return el.apply(this, arguments);
+		};
+	});
+})(jQuery);

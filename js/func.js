@@ -5,6 +5,7 @@ var storagestaticpie;
 var nettrafficplot;
 var cpuloadplot;
 var nettrrafficseries;
+var prevbandwidth = new Array(2);
 var randomdatabandwidth = new Array(2);
 var randomdatacpu=[];
 var uptimesec;
@@ -192,6 +193,24 @@ function getselectlist() {
                     		{
                     			value:'2',
                     			text:'40MHz',
+                    			defaultoption:0
+                    		}]
+                    },{
+                    	name: '5Gchannelbandwidth1',
+                    	selectlist: [
+                    		{
+                    			value:'0',
+                    			text:'80MHz',
+                    			defaultoption:1
+                    		},
+                    		{
+                    			value:'1',
+                    			text:'160MHz',
+                    			defaultoption:0
+                    		},
+                    		{
+                    			value:'2',
+                    			text:'80+80MHz',
                     			defaultoption:0
                     		}]
                     },{
@@ -662,8 +681,11 @@ function getselectlist() {
 	       		if(alllist.name=='24Gchannelbandwidth') {
 		       		$('#simplegeneralpage .bandwidth').data('24G',alllist);
 	       		}
-	       		if(alllist.name=='24Gchannelbandwidth') {
+	       		if(alllist.name=='5Gchannelbandwidth') {
 		       		$('#simplegeneralpage .bandwidth').data('5G',alllist);
+	       		}
+	       		if(alllist.name=='5Gchannelbandwidth1') {
+		       		$('#simplegeneralpage .bandwidth1').data('5G',alllist);
 	       		}
 	       		if(alllist.name=='24Gcontrolchannel') {
 		       		$('#simplegeneralpage .channel').data('24G',alllist);
@@ -982,6 +1004,15 @@ function getselectlist() {
 
 $(document).ready(function() {
 
+     /* init variable */
+     prevbandwidth[0]=0;
+     prevbandwidth[1]=0;
+     randomdatabandwidth[0]=[];
+     randomdatabandwidth[1]=[];
+     for(var i=0;i<60;i++) {
+          randomdatabandwidth[0].push(0);
+          randomdatabandwidth[1].push(0);
+     }
 	// bootstarp有BUG!! 檢查關閉modal時 其他的modal如果開著 就要把body加上modal-open
 	// $("a[href='#mobiledevicepage']").on('shown.bs.tab', function(e) {
 	// 	getclientlist();
@@ -1096,7 +1127,11 @@ $(document).ready(function() {
 			($('#configurationpage').is(':visible') && $('#vpnconfigpage').is(':visible') && $('#advconfigpage').is(':visible')) ||
 			$('#vpnclientpage').is(':visible') ||
 			$(this).is('#wakeonlanconfigpagemacnow') ||
-			$(this).is('#logstatuspagestatustype')
+			$(this).is('#logstatuspagestatustype') ||
+			$(this).hasClass('ltepincode') ||
+			$(this).hasClass('setltepincode') ||
+               $(this).is('#wirelessmodeswitch') ||
+               ($(this).parents('#wificonfigpage').is('#wificonfigpage') && $(this).hasClass('type'))
 		) return;
 		console.log($(this).parents('.genconfig').attr('id'));
 		$('body').data('check', {
@@ -1122,7 +1157,9 @@ $(document).ready(function() {
 		if (($('#firmwarepage').is(':visible') && $('#systemconfigpage').is(':visible') && $('#generalconfigpage').is(':visible')) ||
 			($('#configurationpage').is(':visible') && $('#vpnconfigpage').is(':visible') && $('#advconfigpage').is(':visible')) ||
 			$(this).is('#wakeonlanconfigpagemacnow') ||
-			$('#vpnclientpage').is(':visible')
+			$('#vpnclientpage').is(':visible') ||
+			$(this).hasClass('ltepincode') ||
+			$(this).hasClass('setltepincode')
 		) return;
 		if ((e.which >= 37 && e.which <= 40) || e.which === 91 || e.which === 9) {
 			return;
@@ -1138,6 +1175,7 @@ $(document).ready(function() {
 		var check = $('body').data('check');
 		if (check==undefined) return;
 		if (check.change==true) {
+			var thisClick = $(this);
 			$.confirm({
 				text: 'Configuration changed detected, do you want to apply it?',
 				title: 'Message Content',
@@ -1151,6 +1189,13 @@ $(document).ready(function() {
 				},
 				cancel: function(button) {
 					$('body').removeData('check');
+					if (thisClick.parents('.nav-tabs').hasClass('nav-tabs')) {
+						$('[href="'+thisClick.children().attr('href')+'"]').tab('show');
+					} else if (thisClick.parents('#navbarCollapse').is('#navbarCollapse')) {
+						$('#navbarCollapse .'+thisClick.attr('class')).children('a').trigger('click');
+					} else {
+						$('#'+thisClick.children().attr('id')).trigger('click');
+					}
 				}
 			});
 		}

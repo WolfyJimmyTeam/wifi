@@ -39,14 +39,22 @@
 	display: inline-block; width: 40px; height: 40px; margin-top: 4px; background: #ddd;
 	font-size: 16px; color: #fff; line-height: 40px;
 	-moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%;
+	text-align: center;
 }
-.f1-step.active .f1-step-icon i {
+.f1-step.active .f1-step-icon i,
+.f1-step .f1-step-icon i
+{
 	margin-top:12px;
-	margin-left:15px;
 }
-.f1-step .f1-step-icon i {
-	margin-top:12px;
-	margin-left:11px;
+.f1-step .f1-step-icon .askeyicon
+{
+	margin-top: 8px;
+	font-size: 25px;
+}
+.f1-step.active .f1-step-icon .askeyicon
+{
+	margin-top: 12px;
+	font-size: 25px;
 }
 .f1-step p {
 	margin-left:5px;
@@ -67,3 +75,7 @@
 .f1-buttons { text-align: right; }
 
 .f1 .input-error { border-color: #f35b3f; }
+
+.img-logo {
+	margin-bottom: 15px;
+}

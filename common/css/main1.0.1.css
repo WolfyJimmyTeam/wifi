@@ -64,6 +64,10 @@ dl.dl-form>dt {
 .input-group {
 	margin: 15px 0;
 }
+.form-space {
+	margin-top: 1.3rem;
+	margin-bottom: 1.6rem;
+}
 .btn-group-xs>.btn, .btn-xs1 {
 	padding: 0 5px;
 	padding-top: 3px;
@@ -392,6 +396,11 @@ label.label-checkbox>input {
 	margin-top: 8px;
 }
 
+.btn-icon {
+	padding: 7px 10px;
+	cursor: pointer;
+}
+
 /*tabs*/
 .nav-tabs>li {
 	font-weight: bolder;
@@ -675,14 +684,20 @@ label.label-checkbox>input {
 }
 
 /*panel collapse*/
-.panel-group [data-toggle="collapse"] {
+.panel-group [data-toggle="collapse"],
+.listfilter
+{
 	cursor: pointer;
 }
-.panel-heading>.caret {
+.panel-heading>.caret,
+.listfilter>.caret
+{
 	transition: all .5s;
 	transform: rotate(180deg);
 }
-.panel-heading.collapsed>.caret {
+.panel-heading.collapsed>.caret,
+.listfilter.sort>.caret
+{
 	transform: rotate(0deg);
 }
 

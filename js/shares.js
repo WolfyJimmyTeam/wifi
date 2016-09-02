@@ -146,6 +146,7 @@ function init_storagestaticchart() {
 				{
 					pie:
 					{
+						innerRadius: 0.5,
 						show: true
 					}
 				},
@@ -661,7 +662,6 @@ function smartstatus() {
 		method: 'smartstatus',
 		sessionid: sessionID
 	};
-	setTimeout(function() {
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
 		var data =
 		{
@@ -717,7 +717,6 @@ function smartstatus() {
 			myalert(data.feed.msg);
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
-	}, 2000);
 }
 var filesystemcheckInterval;
 var demodData =
@@ -907,7 +906,6 @@ function usbsaferemovecheck() {
 		method: 'usbsaferemovecheck',
 		sessionid: sessionID
 	};
-	setTimeout(function() {
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
 		var data =
 		{
@@ -928,7 +926,6 @@ function usbsaferemovecheck() {
 			myalert(data.feed.msg);
 		}
 	// }, 'json').error(function(jqXHR, textStatus, errorThrown) {});
-	}, 2000);
 }
 
 
@@ -962,11 +959,13 @@ function getusers() {
 					[
 						{
 							username: 'wolfy',
+							password: '1234',
 							nickname: '蘇建益',
 							desc: '爸爸'
 						},
 						{
 							username: 'likky',
+							password: '1234',
 							nickname: '林太太',
 							desc: '我的老婆'
 						}
@@ -1001,6 +1000,7 @@ function adduser(addData) {
 		method: 'adduser',
 		sessionid: sessionID,
 		username: addData.username,
+		password: addData.password,
 		nickname: addData.nickname,
 		desc: addData.desc
 	};
@@ -1032,6 +1032,8 @@ function updateuser(editData) {
 	{
 		method: 'updateuser',
 		sessionid: sessionID,
+		username: editData.username,
+		password: editData.password,
 		nickname: editData.nickname,
 		desc: editData.desc
 	};
@@ -1239,7 +1241,7 @@ function appendShare(data) {
 				'</td>'+
 				'<td>'+data.sharename+'</td>'+
 				'<td>'+data.directory+'</td>'+
-				'<td>'+data.type+'</td>'+
+				// '<td>'+data.type+'</td>'+
 				'<td desc>'+data.desc+'</td>'+
 			'</tr>';
 }
@@ -1280,7 +1282,7 @@ function getshares() {
 						{
 							directory: 'Home',
 							sharename: '家裡',
-							type: 'FTP',
+							// type: 'FTP',
 							desc: '分享給家人',
 							users:
 							[
@@ -1295,7 +1297,7 @@ function getshares() {
 						{
 							directory: 'wife',
 							sharename: '老婆',
-							type: 'SAMBA',
+							// type: 'SAMBA',
 							desc: '給老婆',
 							users:
 							[
@@ -1331,7 +1333,8 @@ function getshares() {
 function addshare() {
 	var isExisted = false;
 	$('#storagesharepage-4 .list>tbody>tr').each(function(index, el) {
-		if ($(el).data('data').sharename==$('#modal-add-storagesharepage-4 .name').val() && $(el).data('data').type==$('#modal-add-storagesharepage-4 .type').val()) {
+		// if ($(el).data('data').sharename==$('#modal-add-storagesharepage-4 .name').val() && $(el).data('data').type==$('#modal-add-storagesharepage-4 .type').val()) {
+		if ($(el).data('data').sharename==$('#modal-add-storagesharepage-4 .name').val()) {
 			myalert('Service existed, try something else!!!');
 			isExisted = true;
 			return false;
@@ -1363,7 +1366,7 @@ function addshare() {
 			{
 				directory: $(el).html(),
 				sharename: $('#modal-add-storagesharepage-4 .name').val(),
-				type: $('#modal-add-storagesharepage-4 .type').val(),
+				// type: $('#modal-add-storagesharepage-4 .type').val(),
 				desc: $('#modal-add-storagesharepage-4 .desc').val(),
 				users: usersArr
 			}
@@ -1418,7 +1421,7 @@ function updateshare() {
 		{
 			directory: $('#modal-edit-storagesharepage-4 .dir').html(),
 			sharename: $('#modal-edit-storagesharepage-4 span.name').html(),
-			type: $('#modal-edit-storagesharepage-4 .type').html(),
+			// type: $('#modal-edit-storagesharepage-4 .type').html(),
 			desc: $('#modal-edit-storagesharepage-4 .desc').val(),
 			users: usersArr
 		}
@@ -1439,7 +1442,8 @@ function updateshare() {
 		if (data.stat == 'success') {
 			console.log(postData);
 			$('#storagesharepage-4 .list>tbody>tr').each(function(index, el) {
-				if ($('#modal-edit-storagesharepage-4 span.name').html()==$(el).data('data').sharename && $('#modal-edit-storagesharepage-4 .type').html()==$(el).data('data').type) {
+				// if ($('#modal-edit-storagesharepage-4 span.name').html()==$(el).data('data').sharename && $('#modal-edit-storagesharepage-4 .type').html()==$(el).data('data').type) {
+				if ($('#modal-edit-storagesharepage-4 span.name').html()==$(el).data('data').sharename) {
 					$(el).children('td[desc]').html(postData.data.shares[0].desc);
 					$(el).data('data').desc = postData.data.shares[0].desc;
 					$(el).data('data').users = postData.data.shares[0].users;
@@ -1455,7 +1459,7 @@ function removeshare(tr) {
 		method: 'removeshare',
 		sessionid: sessionID,
 		sharename: tr.data('data').name,
-		type: tr.data('data').type
+		// type: tr.data('data').type
 	};
 	// $.post(serverURL, postData, function(data, textStatus, jqXHR) {
 		var data =
@@ -1670,6 +1674,7 @@ $(document).ready(function() {
 					.data('isAdd', false)
 					.find('.modal-title').html('<span class="glyphicon glyphicon-pencil"></span> Edit <span class="name">'+trData.username+'</span>')
 					.end().find('.alias').val(trData.nickname)
+					.end().find('.password').val(trData.password)
 					.end().find('.desc').val(trData.desc)
 					.end().find('input.name').parent().parent().hide();
 				$('#modal-edit-storagesharepage-3').data('isAdd', false).modal('show');
@@ -1696,6 +1701,7 @@ $(document).ready(function() {
 			adduser(
 				{
 					username: modal.find('.name').val(),
+					password: modal.find('.password').val(),
 					nickname: modal.find('.alias').val(),
 					desc: modal.find('.desc').val()
 				}
@@ -1704,6 +1710,7 @@ $(document).ready(function() {
 			updateuser(
 				{
 					username: modal.find('.name').html(),
+					password: modal.find('.password').val(),
 					nickname: modal.find('.alias').val(),
 					desc: modal.find('.desc').val()
 				}
@@ -1744,7 +1751,7 @@ $(document).ready(function() {
 				});
 				$('#modal-edit-storagesharepage-4')
 					.find('.dir').html(trData.directory)
-					.end().find('.type').html(trData.type)
+					// .end().find('.type').html(trData.type)
 					.end().find('.desc').val(trData.desc)
 					.end().find('.modal-title').html('<span class="glyphicon glyphicon-pencil"></span> Share Edit <span class="name">'+trData.sharename+'</span>')
 					.end().modal('show');
